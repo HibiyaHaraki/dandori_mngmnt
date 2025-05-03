@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if invalid_input_flag %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error: Cannot create new Task!!</h4>
+    <hr>
+    <ul>
+        {% for input in invalid_inputs %}
+        <li>Invalid {{ input }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<form action="/create_task" method="POST">
+    <fieldset>
+        <div class="row mb-3">
+            <div class="col-2">
+                <label for="TaskID" class="form-label">Task ID</label>
+                <input type="text" class="form-control" id="TaskID" value={{ new_taskID }} disabled>
+            </div>
+            <div class="col-10">
+                <label for="TaskName" class="form-label">
+                    Task Name
+                    <span class="badge text-bg-danger">Must</span>
+                </label>
+                <input type="text" class="form-control" id="TaskName" name="TaskName">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="TaskProject" class="form-label">
+                Project
+            </label>
+            <input type="text" class="form-control" id="TaskProject" name="TaskProject">
+        </div>
+        <div class="mb-3">
+            <label for="TaskAssignedBy" class="form-label">
+                Assigned by
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <input type="text" class="form-control" id="TaskAssignedBy" name="TaskAssignedBy">
+        </div>
+        <div class="mb-3">
+            <label for="TaskDueDate" class="form-label">
+                Due date
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <input type="datetime-local" class="form-control" id="TaskDueDate" name="TaskDueDate">
+        </div>
+        <div class="mb-3">
+            <label for="TaskCriteria" class="form-label">
+                Criteria
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <textarea class="form-control" id="TaskCriteria" name="TaskCriteria" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="TaskDescription" class="form-label">
+                Description
+            </label>
+            <textarea class="form-control" id="TaskDescription" name="TaskDescription" rows="5"></textarea>
+        </div>
+        
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+{% endblock %}

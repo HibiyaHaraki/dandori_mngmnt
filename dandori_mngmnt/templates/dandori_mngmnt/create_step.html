@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if invalid_input_flag %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error: Cannot create new Step!!</h4>
+    <hr>
+    <ul>
+        {% for input in invalid_inputs %}
+        <li>Invalid {{ input }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<form id="Form_AddStep" action="/create_step" method="POST">
+    <fieldset>
+        <div class="row mb-3">
+            <div class="col-2">
+                <label for="TaskID" class="form-label">Step ID</label>
+                <input type="text" class="form-control" id="TaskID" value={{ new_stepID }} disabled>
+            </div>
+            <div class="col-10">
+                <label for="StepName" class="form-label">
+                    Step Name
+                    <span class="badge text-bg-danger">Must</span>
+                </label>
+                <input type="text" class="form-control" id="StepName" name="StepName">
+            </div>
+        </div>
+    </fieldset>
+    <div class="mb-4">
+        <label for="TaskID" class="form-label">Pairent Task</label>
+        <div class="row g-2">
+            <div class="col-1">
+                <a href="{{ parent_task.url }}">{{ parent_task.sysID }}</a>
+            </div>
+            <div class="col-11">
+                {% if parent_task.project != '' %}
+                [{{ parent_task.project }}] 
+                {% endif %}
+                {{ parent_task.name }}
+            </div>
+        </div>
+    </div>
+    <fieldset>
+        <div class="mb-3">
+            <label for="StepDueDate" class="form-label">
+                Due date
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <input type="datetime-local" class="form-control" id="StepDueDate" name="StepDueDate">
+        </div>
+        <div class="mb-3">
+            <label for="StepCriteria" class="form-label">
+                Criteria
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <textarea class="form-control" id="StepCriteria" name="StepCriteria" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="TaskDescription" class="form-label">
+                Description
+            </label>
+            <textarea class="form-control" id="TaskDescription" name="StepDescription" rows="5"></textarea>
+        </div>
+        
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" data-as-focus='true'>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="alert alert-danger" role="alert">
+            Error: cannot add new STEP data
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+</div>
+
+<script>
+    document.getElementById("Form_AddStep").action = location.pathname;
+</script>
+{% endblock %}

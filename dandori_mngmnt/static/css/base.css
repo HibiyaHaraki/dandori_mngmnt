@@ -1,0 +1,22 @@
+:root {
+    --bootstrap-dark-bg: #212529;
+    --sub-color: #7a8a99;
+    --Iinconspicuous-color: #292e33;
+}
+
+.todo_type {
+    color: var(--sub-color);
+}
+
+.detail_criteria, .detail_description {
+    border: 2px solid var(--Iinconspicuous-color);
+    border-radius: 5px;
+}
+
+.detail_criteria {
+    min-height: 100px;
+}
+
+.detail_description {
+    min-height: 150px;
+}

@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="col-auto mt-3">
+    <form action="/TASK" method="GET">
+        <div class="row w-100 justify-content-center">
+            <div class="col-auto m-1">
+                <div class="input-group">
+                    <div class="input-group-text">Status</div>
+                    {% for status in form['status_info'].values() %}
+                    <div class="mx-0">
+                        {% if form['status_selected'][loop.index0] %}
+                        <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}" checked>
+                        {% else %}
+                        <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}">
+                        {% endif %}
+                        <label class="btn btn-outline-{{ status['color'] }}" for="{{ status['str'] }}">{{ status['str'] }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-auto m-1">
+                <div class="input-group">
+                    <div class="input-group-text">From</div>
+                    <input type="datetime-local" class="form-control" id="StartDueDate" name="StartDueDate" value="{{ form.start_due_date }}">
+                </div>
+            </div>
+            <div class="col-auto m-1">
+                <div class="input-group">
+                    <div class="input-group-text">Until</div>
+                    <input type="datetime-local" class="form-control" id="EndDueDate" name="EndDueDate" value="{{ form.end_due_date }}">
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="col-auto mt-3">
+    <h2>Task Statistics</h2>
+    {% include 'dandori_mngmnt/status_analysis.html' %}
+    {% include 'dandori_mngmnt/due_date_analysis.html' %}
+</div>
+
+<div class="row w-100">
+    <div class="col-auto me-auto">
+        <h2>Task List</h2>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary" onclick="location.href='/create_task'">
+            Create
+        </button>
+    </div>
+</div>
+<table class="table table-dark table-striped text-wrap">
+    <thead>
+        <tr>
+            <th class="align-middle text-center" scope="col">ID</th>
+            <th class="align-middle text-center" scope="col">Status</th>
+            <th scope="col">Task Name</th>
+            <th class="align-middle text-center" scope="col">Due Date</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for task in tasks %}
+            <tr>
+                <th scope="row" class="align-middle text-center"><a href="{{ task.url }}" >{{ task.sysID }}</a></td>
+                <td class="align-middle text-center"><span class="badge text-bg-{{ task.status.state_color }}">{{ task.status.state_str }}</span></td>
+                <td>{{ task.name }}</td>
+                <td class="align-middle text-center"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include 'dandori_mngmnt/analysis_control.html' %}
+
+{% endblock %}

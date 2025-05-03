@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-xl">
+        <div class="row w-100">
+            <div class="col-auto me-auto">
+                <h2>To do Tasks</h2>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-primary" onclick="location.href='/create_task'">
+                    Create
+                </button>
+            </div>
+        </div>
+        <table class="table table-dark table-striped text-wrap">
+            <thead>
+                <tr>
+                    <th class="align-middle text-center" scope="col">ID</th>
+                    <th class="align-middle text-center" scope="col">Status</th>
+                    <th scope="col">Task Name</th>
+                    <th class="align-middle text-center" scope="col">Due Date</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for task in to_do_tasks %}
+                    <tr>
+                        <th scope="row" class="align-middle text-center"><a href="{{ task.url }}" >{{ task.sysID }}</a></td>
+                        <td class="align-middle text-center"><span class="badge text-bg-{{ task.status.state_color }}">{{ task.status.state_str }}</span></td>
+                        <td>{{ task.name }}</td>
+                        <td class="align-middle text-center"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row mb-5">
+    <div class="col-xl">
+        <div class="row w-100">
+            <div class="col-auto me-auto">
+                <h2>To do Steps</h2>
+            </div>
+        </div>
+        <table class="table table-sm table-dark table-striped w-100">
+            <thead>
+                <tr>
+                    <th class="align-middle text-center" scope="col">ID</th>
+                    <th class="align-middle text-center" scope="col">Task</th>
+                    <th class="align-middle text-center" scope="col">Status</th>
+                    <th scope="col">Step Name</th>
+                    <th class="align-middle text-center" scope="col">Due Date</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for step in to_do_steps %}
+                    <tr>
+                        <th class="align-middle text-center" scope="row"><a href="{{ step.url }}">{{ step.sysID }}</a></td>
+                        <th class="align-middle text-center" scope="row"><a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a></td>
+                        <td class="align-middle text-center"><span class="badge text-bg-{{ step.status.state_color }}">{{ step.status.state_str }}</span></td>
+                        <td>{{ step.name }}</td>
+                        <td class="align-middle text-center"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

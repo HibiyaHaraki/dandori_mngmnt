@@ -1,0 +1,47 @@
+<div class="mb-5">
+    <span class="todo_type">Comments: </span>
+    <ul class="list-group list-group-flush mb-3">
+        {% for comment in comments %}
+        <li class="list-group-item">
+            <div class="m-2 me-auto">
+                <div class="fst-italic">
+                    {{ comment.created_date_str }}
+                    {% if comment.created_date_str != comment.updated_date_str %}
+                    ({{ comment.updated_date_str }})
+                    {% endif %}
+                </div>
+                <span class="fw-bold">
+                    {{ comment.comment.replace("\r\n", "<br>") | safe }}
+                </span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_comment_form">
+        Add Comment
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="add_comment_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="Form_AddComment" action="/" method="POST">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Comment</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="AddComment" name="AddComment" rows="5"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("Form_AddComment").action = location.pathname + "/add_comment";
+</script>

@@ -1,0 +1,26 @@
+{% block content %}
+<div class="row my-5 justify-content-evenly">
+    <div class="col-auto">
+        <canvas id="status_statistics"></canvas>
+    </div>
+    <div class="col-2 d-table">
+        <table class="d-table-cell align-middle table table-dark table-borderless text-wrap h5">
+            <tbody>
+                {% for idx in status_statistics['index'] %}
+                <tr>
+                    <th class="text-center">
+                        <span class="badge text-bg-{{ status_statistics['color'][idx] }}">
+                            {{ status_statistics['labels'][idx] }}
+                        </span>
+                    </th>
+                    <th class="text-center">
+                        {{ status_statistics['data'][idx] }}
+                    </th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

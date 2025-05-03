@@ -1,0 +1,78 @@
+{% block content %}
+
+<script>
+    window.onload = (e)=>{
+        console.log("doughnut")
+        var background_Color = []
+        {% for color in status_statistics['color'] %}
+        background_Color.push(
+            getComputedStyle(document.getElementsByTagName('body')[0]).getPropertyValue('--bs-{{ color }}')
+        )
+        {% endfor %}
+        
+        // Status Statistics
+        const ctx = document.getElementById("status_statistics").getContext("2d");
+        const myChart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: {{ status_statistics['labels'] | tojson | safe }},
+                datasets: [{
+                    data: {{ status_statistics['data'] | tojson | safe }},
+                    backgroundColor: background_Color,
+                    borderColor: background_Color,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    
+        // Due Date Statistics
+        var due_date_dataset = [];
+        var background_Color = [];
+        {% for status_str in due_date_statistics['data'].keys() %}
+        background_Color.push(
+            getComputedStyle(document.getElementsByTagName('body')[0]).getPropertyValue('--bs-{{ due_date_statistics['color'][loop.index0] }}')
+        )
+        due_date_dataset.push(
+            {
+                data: {{ due_date_statistics['data'][status_str] | tojson | safe }},
+                label: "{{ status_str }}",
+                backgroundColor: background_Color[{{ loop.index0 }}]
+            }
+        )
+        {% endfor %}
+        const ctx2 = document.getElementById("due_date_statistics").getContext("2d");
+        const myChart2 = new Chart(ctx2, {
+            type: "bar",
+            data: {
+                labels: {{ due_date_statistics['labels'] | tojson | safe }},
+                datasets: due_date_dataset
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+{% endblock %}
