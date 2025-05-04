@@ -218,7 +218,7 @@ def get_step_dueDate_analysis_data(
         end_time      = Step(end_time_db).due_date.due_date
         date_list = []
         day = 0
-        while((start_time + timedelta(days=day)) <= end_time):
+        while(datetime.combine(start_time, time()) + timedelta(days=day) <= end_time):
             date_list.append(start_time + timedelta(days=day))
             dueDate_statistics['labels'].append((start_time + timedelta(days=day)).strftime('%Y/%m/%d'))
             day += 1
@@ -236,7 +236,7 @@ def get_step_dueDate_analysis_data(
                             Step_DB_list\
                                 .filter(Step_DB.status   == status)\
                                 .filter(Step_DB.due_date >= temp_start_time)\
-                                .filter(Step_DB.due_date <  temp_end_time)
+                                .filter(Step_DB.due_date <  temp_end_time)\
                                 .count()
                         )
     
