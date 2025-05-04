@@ -9,6 +9,15 @@
                     {% if comment.created_date_str != comment.updated_date_str %}
                     ({{ comment.updated_date_str }})
                     {% endif %}
+                    <div class="btn-group mx-2">
+                        <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdowm-menu-dark">
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_comment_form-{{ comment.id }}">Edit</a></li>
+                            <li><a class="dropdown-item" href="{{ parent_id }}//delete_comment/{{ comment.id }}">Delete</a></li>
+                        </ul>
+                      </div>
                 </div>
                 <span class="fw-bold">
                     {{ comment.comment.replace("\r\n", "<br>") | safe }}
@@ -22,7 +31,7 @@
     </button>
 </div>
 
-<!-- Modal -->
+<!-- Modal for creating new comment -->
 <div class="modal fade" id="add_comment_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -42,6 +51,29 @@
     </div>
 </div>
 
+{% for comment in comments %}
+<!-- Modal for creating new comment -->
+<div class="modal fade" id="edit_comment_form-{{ comment.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="Form_EditComment" action="{{ parent_id }}/edit_comment/{{ comment.id }}" method="POST">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Comment</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="EditComment" name="EditComment" rows="5" >{{ comment.comment.replace("\r\n", "<br>") | safe }}</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 <script>
     document.getElementById("Form_AddComment").action = location.pathname + "/add_comment";
+    
 </script>
