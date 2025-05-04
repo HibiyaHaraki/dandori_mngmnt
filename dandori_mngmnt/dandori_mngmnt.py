@@ -26,7 +26,7 @@ from dandori_mngmnt.script.Status   import *
 
 # Static definition
 NUMBER_OF_TODO = 20
-NUMBER_OF_DAYS = 10
+NUMBER_OF_DAYS = 30
 
 # Index.html
 @app.route('/')
@@ -71,7 +71,7 @@ def task():
         }
         input_statuses = ALL_STATUS
         start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=20)
+        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -85,7 +85,7 @@ def task():
         
         temp_start_date_str = request.args.get('StartDueDate', '')
         if (temp_start_date_str != ''):
-            start_date = datetime.strftime(temp_start_date_str,JS_TIME_FORMAT)
+            start_date = datetime.strptime(temp_start_date_str,JS_TIME_FORMAT)
             form['start_due_date'] = temp_start_date_str
         else:
             form['start_due_date'] = start_date.strftime(JS_TIME_FORMAT)
@@ -143,7 +143,7 @@ def step():
         }
         input_statuses = ALL_STATUS
         start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=20)
+        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -157,7 +157,7 @@ def step():
         
         temp_start_date_str = request.args.get('StartDueDate', '')
         if (temp_start_date_str != ''):
-            start_date = datetime.strftime(temp_start_date_str,JS_TIME_FORMAT)
+            start_date = datetime.strptime(temp_start_date_str,JS_TIME_FORMAT)
             form['start_due_date'] = temp_start_date_str
         else:
             form['start_due_date'] = start_date.strftime(JS_TIME_FORMAT)
