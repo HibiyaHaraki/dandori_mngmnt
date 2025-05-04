@@ -195,7 +195,7 @@ def step():
         )
 
 # Task detail Page
-@app.route('/TASK/<int:id>', methods=['GET'])
+@app.route('/TASK/<int:id>', methods=['GET', 'POST'])
 def task_detail(id):
     if (request.method == 'GET'):
         task_data = Task(id)
@@ -204,8 +204,10 @@ def task_detail(id):
             'dandori_mngmnt/task_detail.html',
             task  = task_data,
             steps = steps,
-            comments = task_data.get_comments()
+            comments = task_data.get_comments(),
+            parent_id = id
         )
+
 
 # Task add comment
 @app.route('/TASK/<int:id>/add_comment', methods=['POST'])
@@ -220,6 +222,25 @@ def task_add_comment(id):
             return redirect(url_for('task_detail', id=id))
         else:
             pass
+
+# Task edit comment
+@app.route('/TASK/<int:task_id>/edit_comment/<int:comment_id>', methods=['POST'])
+def task_edit_comment(task_id, comment_id):
+    if (request.method == 'POST'):
+        form_comment    = request.form.get('EditComment')
+        current_comment = Comment(int(comment_id))
+        if (current_comment.comment != form_comment):
+            current_comment.update(form_comment)
+            return redirect(url_for('task_detail', id=task_id))
+
+# Task delete comment
+@app.route('/TASK/<int:task_id>/delete_comment/<int:comment_id>', methods=['GET'])
+def task_delete_comment(task_id,comment_id):
+    if (request.method == 'GET'):
+        current_task = Task(task_id)
+        current_task.comments.remove(int(comment_id))
+        current_task.update()
+        return redirect(url_for('task_detail', id=task_id))
 
 '''
 @app.route('/TASK/<int:id>/change_state', methods=['GET'])
@@ -278,10 +299,11 @@ def step_detail(id):
         step = step_data,
         parent_task = parent_task,
         comments = step_data.get_comments(),
-        steps = parent_task.get_steps()
+        steps = parent_task.get_steps(),
+        parent_id = id
     )
 
-# Task add comment
+# Step add comment
 @app.route('/STEP/<int:id>/add_comment', methods=['POST'])
 def step_add_comment(id):
     if (request.method == 'POST'):
@@ -294,6 +316,25 @@ def step_add_comment(id):
             return redirect(url_for('step_detail', id=id))
         else:
             pass
+
+# Step edit comment
+@app.route('/STEP/<int:step_id>/edit_comment/<int:comment_id>', methods=['POST'])
+def step_edit_comment(step_id, comment_id):
+    if (request.method == 'POST'):
+        form_comment    = request.form.get('EditComment')
+        current_comment = Comment(int(comment_id))
+        if (current_comment.comment != form_comment):
+            current_comment.update(form_comment)
+            return redirect(url_for('step_detail', id=step_id))
+
+# Step delete comment
+@app.route('/STEP/<int:step_id>/delete_comment/<int:comment_id>', methods=['GET'])
+def step_delete_comment(step_id,comment_id):
+    if (request.method == 'GET'):
+        current_step = Step(step_id)
+        current_step.comments.remove(int(comment_id))
+        current_step.update()
+        return redirect(url_for('step_detail', id=step_id))
 
 @app.route('/STEP/<int:id>/change_state', methods=['GET'])
 def step_change_state(id):
