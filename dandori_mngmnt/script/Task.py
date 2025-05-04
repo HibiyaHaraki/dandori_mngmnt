@@ -250,8 +250,8 @@ def get_task_dueDate_analysis_data(
         end_time      = Task(end_time_db).due_date.due_date
         date_list = []
         day = 0
-        while((start_time + timedelta(days=day)) <= end_time):
-            date_list.append(start_time + timedelta(days=day))
+        while(datetime.combine(start_time, time()) + timedelta(days=day) <= end_time):
+            date_list.append(datetime.combine(start_time, time()) + timedelta(days=day))
             dueDate_statistics['labels'].append((start_time + timedelta(days=day)).strftime('%Y/%m/%d'))
             day += 1
 
@@ -263,12 +263,12 @@ def get_task_dueDate_analysis_data(
                     dueDate_statistics['color'].append(STATUS_LIST[status_info]['color'])
                     for start_date in date_list:
                         temp_start_time = datetime.combine(start_date, time())
-                        temp_end_time = datetime.combine(start_date + timedelta(days=1), time())
+                        temp_end_time = datetime.combine(temp_start_time + timedelta(days=1), time())
                         dueDate_statistics['data'][STATUS_LIST[status_info]['str']].append(
                             task_db_list\
                                 .filter(Task_DB.status   == status)\
                                 .filter(Task_DB.due_date >= temp_start_time)\
-                                .filter(Task_DB.due_date <  temp_end_time)
+                                .filter(Task_DB.due_date <  temp_end_time)\
                                 .count()
                         )
     

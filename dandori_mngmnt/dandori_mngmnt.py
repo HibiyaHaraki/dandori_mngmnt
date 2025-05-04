@@ -70,8 +70,8 @@ def task():
             'end_due_date'   : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = None
-        end_date        = None
+        start_date      = datetime.today()
+        end_date        = datetime.today() + timedelta(days=20)
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -85,12 +85,16 @@ def task():
         
         temp_start_date_str = request.args.get('StartDueDate', '')
         if (temp_start_date_str != ''):
-            start_date = datetime.strptime(temp_start_date_str,JS_TIME_FORMAT)
+            start_date = datetime.strftime(temp_start_date_str,JS_TIME_FORMAT)
             form['start_due_date'] = temp_start_date_str
+        else:
+            form['start_due_date'] = start_date.strftime(JS_TIME_FORMAT)
         temp_end_date_str = request.args.get('EndDueDate', '')
         if (temp_end_date_str != ''):
             end_date   = datetime.strptime(temp_end_date_str,JS_TIME_FORMAT)
             form['end_due_date'] = temp_end_date_str
+        else:
+            form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
 
         # Get task status statistics for graph
         status_statistics = get_task_status_analysis_data(
@@ -111,7 +115,7 @@ def task():
             statuses = input_statuses,
             start_due_date = start_date,
             end_due_date = end_date
-        ).all()
+        ).order_by(Task_DB.due_date).all()
         tasks = []
         for task_db in tasks_db:
             task = Task(task_db)
@@ -138,8 +142,8 @@ def step():
             'end_due_date'   : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = None
-        end_date        = None
+        start_date      = datetime.today()
+        end_date        = datetime.today() + timedelta(days=20)
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -153,12 +157,16 @@ def step():
         
         temp_start_date_str = request.args.get('StartDueDate', '')
         if (temp_start_date_str != ''):
-            start_date = datetime.strptime(temp_start_date_str,JS_TIME_FORMAT)
+            start_date = datetime.strftime(temp_start_date_str,JS_TIME_FORMAT)
             form['start_due_date'] = temp_start_date_str
+        else:
+            form['start_due_date'] = start_date.strftime(JS_TIME_FORMAT)
         temp_end_date_str = request.args.get('EndDueDate', '')
         if (temp_end_date_str != ''):
             end_date   = datetime.strptime(temp_end_date_str,JS_TIME_FORMAT)
             form['end_due_date'] = temp_end_date_str
+        else:
+            form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
 
         # Get task status statistics for graph
         status_statistics = get_step_status_analysis_data(
@@ -179,7 +187,7 @@ def step():
             statuses = input_statuses,
             start_due_date = start_date,
             end_due_date = end_date
-        ).all()
+        ).order_by(Step_DB.due_date).all()
         steps = []
         for step_db in steps_db:
             step = Step(step_db)
