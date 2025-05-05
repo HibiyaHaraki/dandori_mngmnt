@@ -97,9 +97,7 @@ class Status():
             if (step_status_list.count("WAIT") > 0):
                 self.change_state("WAIT")
             else:
-                if (step_status_list.count("OPEN") == len(step_status_list)):
-                    self.change_state("OPEN")
-                elif (step_status_list.count("DONE") == len(step_status_list)):
+                if (step_status_list.count("DONE") == len(step_status_list)):
                     self.change_state("DONE")
                 else:
-                    self.change_state("IN PROGRESS")
+                    self.change_state("OPEN")
