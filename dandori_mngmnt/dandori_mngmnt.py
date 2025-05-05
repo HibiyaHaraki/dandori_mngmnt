@@ -25,7 +25,7 @@ from dandori_mngmnt.script.Due_date import *
 from dandori_mngmnt.script.Status   import *
 
 # Static definition
-NUMBER_OF_TODO = 20
+NUMBER_OF_TODO = 10
 NUMBER_OF_DAYS = 30
 
 # Index.html
@@ -33,7 +33,7 @@ NUMBER_OF_DAYS = 30
 def index():
     # Get tasks
     filtered_tasks_db = db.session.query(Task_DB) \
-        .filter(Task_DB.status != "DONE") \
+        .filter(Task_DB.due_date != "DONE") \
         .order_by(Task_DB.due_date) \
         .order_by(Task_DB.id.desc()) \
         .limit(NUMBER_OF_TODO)
