@@ -163,6 +163,9 @@
                             <a href="{{ parent_task.url }}">{{ parent_task.sysID }}</a>
                         </div>
                         <div class="col-11">
+                            {% if parent_task.project != '' %}
+                            [{{ parent_task.project }}] 
+                            {% endif %}
                             {{ parent_task.name }}
                         </div>
                     </div>

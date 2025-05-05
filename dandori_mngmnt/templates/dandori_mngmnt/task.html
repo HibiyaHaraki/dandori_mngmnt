@@ -68,7 +68,12 @@
             <tr>
                 <th scope="row" class="align-middle text-center"><a href="{{ task.url }}" >{{ task.sysID }}</a></td>
                 <td class="align-middle text-center"><span class="badge text-bg-{{ task.status.state_color }}">{{ task.status.state_str }}</span></td>
-                <td>{{ task.name }}</td>
+                <td>
+                    {% if task.project != '' %}
+                    [{{ task.project }}] 
+                    {% endif %}
+                    {{ task.name }}
+                </td>
                 <td class="align-middle text-center"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></td>
             </tr>
         {% endfor %}
