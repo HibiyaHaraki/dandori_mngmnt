@@ -70,8 +70,8 @@ def task():
             'end_due_date'   : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
+        start_date      = datetime.combine(date.today(), time())
+        end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -142,8 +142,9 @@ def step():
             'end_due_date'   : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
+        start_date      = datetime.combine(date.today(), time())
+        end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+        project         = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -167,6 +168,7 @@ def step():
             form['end_due_date'] = temp_end_date_str
         else:
             form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
+        # project = request.args.get('ProjectQuery', '')
 
         # Get task status statistics for graph
         status_statistics = get_step_status_analysis_data(
