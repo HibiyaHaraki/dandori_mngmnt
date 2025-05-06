@@ -72,6 +72,7 @@ def task():
         input_statuses = ALL_STATUS
         start_date      = datetime.combine(date.today(), time())
         end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+        project         = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -95,26 +96,30 @@ def task():
             form['end_due_date'] = temp_end_date_str
         else:
             form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
+        project = request.args.get('ProjectQuery', '')
 
         # Get task status statistics for graph
         status_statistics = get_task_status_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project
         )
 
         # Get step due_date statistics for graph
         due_date_statistics = get_task_dueDate_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project
         )
         
         # Get task data in table
         tasks_db = get_Task_DB_by_query(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project
         ).order_by(Task_DB.due_date).all()
         tasks = []
         for task_db in tasks_db:
@@ -144,7 +149,7 @@ def step():
         input_statuses = ALL_STATUS
         start_date      = datetime.combine(date.today(), time())
         end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
-        project         = ''
+        # project         = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
