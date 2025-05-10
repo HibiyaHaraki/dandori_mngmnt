@@ -1,62 +1,17 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-<div class="col-auto m-3">
-    <h2>Step Statistics</h2>
-    {% include 'dandori_mngmnt/status_analysis.html' %}
-    {% include 'dandori_mngmnt/due_date_analysis.html' %}
-</div>
-
-<div class="row w-100">
-    <div class="col-auto me-auto">
-        <h2>Steps List</h2>
-    </div>
-</div>
-<table class="table table-dark table-striped text-wrap mb-5">
-    <thead>
-        <tr>
-            <th class="align-middle text-center" scope="col">ID</th>
-            <th class="align-middle text-center" scope="col">Task</th>
-            <th class="align-middle text-center" scope="col">Status</th>
-            <th scope="col">Step Name</th>
-            <th class="align-middle text-center" scope="col">Due Date</th>
-        </tr>
-    </thead>
-    <tbody class="table-group-divider">
-        {% for step in steps %}
-        <tr>
-            <th class="align-middle text-center" scope="row"><a href="{{ step.url }}">{{ step.sysID }}</a></td>
-            <th class="align-middle text-center" scope="row"><a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a></td>
-            <td class="align-middle text-center"><span class="badge text-bg-{{ step.status.state_color }}">{{ step.status.state_str }}</span></td>
-            <td>{{ step.name }}</td>
-            <td class="align-middle text-center"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-{% include 'dandori_mngmnt/step_flow.html' %}
-
-<div class="col-auto mt-3 sticky-bottom bg-body">
-    <form action="/STEP" method="GET">
+<div class="col-auto mt-3">
+    <form action="/SCHEDULE" method="GET">
         <div class="row w-100 justify-content-center">
             <div class="col-11">
                 <div class="row w-100 justify-content-center">
                     <div class="col-auto m-1">
                         <div class="input-group">
-                            <div class="input-group-text">Name</div>
-                            <input type="text" class="form-control" id="NameQuery" name="NameQuery" value="{{ form.name }}">
-                        </div>
-                    </div>
-                    <!--
-                    <div class="col-auto m-1">
-                        <div class="input-group">
                             <div class="input-group-text">Project</div>
-                            <input type="text" class="form-control" id="ProjectQuery" name="ProjectQuery" value="{{ form.project }}">
+                            <input type="text" class="form-control" id="ProjectQuery" name="ProjectQuery" value="">
                         </div>
                     </div>
-                    -->
                     <div class="col-auto m-1">
                         <div class="input-group">
                             <div class="input-group-text">Status</div>
@@ -95,6 +50,16 @@
     </form>
 </div>
 
-{% include 'dandori_mngmnt/analysis_control.html' %}
+<div class="col-auto my-3">
+    <h2>Schedule Statistics</h2>
+    <canvas class="w-100" id="schedule_statistics"></canvas> 
+</div>
+
+<script>
+    window.onload = (e)=>{
+        const ctx2 = document.getElementById("schedule_statistics").getContext("2d");
+        
+    }
+</script>
 
 {% endblock %}
