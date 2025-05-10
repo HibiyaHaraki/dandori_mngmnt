@@ -142,7 +142,8 @@ def get_new_stepID():
 def get_Step_DB_by_query(
     statuses:list           = ALL_STATUS,
     start_due_date:datetime = None,
-    end_due_date:datetime   = None
+    end_due_date:datetime   = None,
+    name:str                = ''
 ):
     if (start_due_date is not None and end_due_date is not None):
         if (start_due_date > end_due_date):
@@ -159,17 +160,27 @@ def get_Step_DB_by_query(
         Step_DB_list = Step_DB_list.filter(Step_DB.due_date >= start_due_date)
     if (end_due_date != None):
         Step_DB_list = Step_DB_list.filter(Step_DB.due_date <  end_due_date)
+    
+    # Filter by project
+    '''
+    if (project != ''):
+        Step_DB_list = Step_DB_list.filter(Step_DB.project.in_(project.split()))
+    '''
+
+    if (name != ''):
+        Step_DB_list = Step_DB_list.filter(Step_DB.name.contains(name))
 
     return Step_DB_list
 
 def get_step_status_analysis_data(
-    statuses:list = ALL_STATUS, 
+    statuses:list           = ALL_STATUS, 
     start_due_date:datetime = None, 
-    end_due_date:datetime = None
+    end_due_date:datetime   = None,
+    name:str                = ''
 ):
     # Get source step db list
     Step_DB_list = get_Step_DB_by_query(
-        statuses, start_due_date, end_due_date
+        statuses, start_due_date, end_due_date, name
     )
 
     # Get step status statistics for graph
@@ -196,13 +207,14 @@ def get_step_status_analysis_data(
     return status_statistics
 
 def get_step_dueDate_analysis_data(
-    statuses:list = ALL_STATUS, 
+    statuses:list           = ALL_STATUS, 
     start_due_date:datetime = None, 
-    end_due_date:datetime = None
+    end_due_date:datetime   = None,
+    name:str                = ''
 ):
     # Get source step db list
     Step_DB_list = get_Step_DB_by_query(
-        statuses, start_due_date, end_due_date
+        statuses, start_due_date, end_due_date, name
     )
 
     dueDate_statistics = {

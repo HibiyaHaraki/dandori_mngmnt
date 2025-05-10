@@ -1,42 +1,6 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="col-auto mt-3">
-    <form action="/TASK" method="GET">
-        <div class="row w-100 justify-content-center">
-            <div class="col-auto m-1">
-                <div class="input-group">
-                    <div class="input-group-text">Status</div>
-                    {% for status in form['status_info'].values() %}
-                    <div class="mx-0">
-                        {% if form['status_selected'][loop.index0] %}
-                        <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}" checked>
-                        {% else %}
-                        <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}">
-                        {% endif %}
-                        <label class="btn btn-outline-{{ status['color'] }}" for="{{ status['str'] }}">{{ status['str'] }}</label>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-auto m-1">
-                <div class="input-group">
-                    <div class="input-group-text">From</div>
-                    <input type="datetime-local" class="form-control" id="StartDueDate" name="StartDueDate" value="{{ form.start_due_date }}">
-                </div>
-            </div>
-            <div class="col-auto m-1">
-                <div class="input-group">
-                    <div class="input-group-text">Until</div>
-                    <input type="datetime-local" class="form-control" id="EndDueDate" name="EndDueDate" value="{{ form.end_due_date }}">
-                </div>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">Apply</button>
-            </div>
-        </div>
-    </form>
-</div>
 
 <div class="col-auto my-3">
     <h2>Task Statistics</h2>
@@ -79,6 +43,68 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% include 'dandori_mngmnt/task_flow.html' %}
+
+<div class="col-auto mt-3 sticky-bottom bg-body">
+    <form action="/TASK" method="GET">
+        <div class="row w-100 justify-content-center">
+            <div class="col-11">
+                <div class="row w-100 justify-content-center">
+                    <div class="col-auto m-1">
+                        <div class="input-group">
+                            <div class="input-group-text">Name</div>
+                            <input type="text" class="form-control" id="NameQuery" name="NameQuery" value="{{ form.name }}">
+                        </div>
+                    </div>
+                    <div class="col-auto m-1">
+                        <div class="input-group">
+                            <div class="input-group-text">Project</div>
+                            <input type="text" class="form-control" list="datalistOptions" id="ProjectQuery" name="ProjectQuery" value="{{ form.project }}">
+                            <datalist id="datalistOptions">
+                                {% for project_name in project_option %}
+                                <option value="{{ project_name }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="col-auto m-1">
+                        <div class="input-group">
+                            <div class="input-group-text">Status</div>
+                            {% for status in form['status_info'].values() %}
+                            <div class="mx-0">
+                                {% if form['status_selected'][loop.index0] %}
+                                <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}" checked>
+                                {% else %}
+                                <input type="checkbox" class="btn-check" id="{{ status['str'] }}" autocomplete="off" name="status" value="{{ status['str'] }}">
+                                {% endif %}
+                                <label class="btn btn-outline-{{ status['color'] }}" for="{{ status['str'] }}">{{ status['str'] }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 justify-content-center">
+                    <div class="col-auto m-1">
+                        <div class="input-group">
+                            <div class="input-group-text">From</div>
+                            <input type="datetime-local" class="form-control" id="StartDueDate" name="StartDueDate" value="{{ form.start_due_date }}">
+                        </div>
+                    </div>
+                    <div class="col-auto m-1">
+                        <div class="input-group">
+                            <div class="input-group-text">Until</div>
+                            <input type="datetime-local" class="form-control" id="EndDueDate" name="EndDueDate" value="{{ form.end_due_date }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 {% include 'dandori_mngmnt/analysis_control.html' %}
 

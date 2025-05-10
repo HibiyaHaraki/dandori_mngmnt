@@ -44,7 +44,8 @@ def index():
 
     # Get Steps
     filtered_steps_db = db.session.query(Step_DB) \
-        .filter(Step_DB.status != "DONE") \
+        .filter(Step_DB.due_date >= datetime.today())\
+        .filter(Step_DB.due_date <  datetime.today() + timedelta(days=1))\
         .order_by(Step_DB.due_date) \
         .order_by(Step_DB.id.desc()) \
         .limit(NUMBER_OF_TODO)
@@ -67,11 +68,15 @@ def task():
             'status_info'    : STATUS_LIST,
             'status_selected': [],
             'start_due_date' : '',
-            'end_due_date'   : ''
+            'end_due_date'   : '',
+            'project'        : '',
+            'name'           : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
+        start_date      = datetime.combine(date.today(), time())
+        end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+        project         = ''
+        name            = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -95,31 +100,45 @@ def task():
             form['end_due_date'] = temp_end_date_str
         else:
             form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
+        project = request.args.get('ProjectQuery', '')
+        if (project != ''):
+            form['project'] = project
+        name    = request.args.get('NameQuery', '')
+        if (name != ''):
+            form['name'] = name
 
         # Get task status statistics for graph
         status_statistics = get_task_status_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project,
+            name = name
         )
 
         # Get step due_date statistics for graph
         due_date_statistics = get_task_dueDate_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project,
+            name = name
         )
         
         # Get task data in table
         tasks_db = get_Task_DB_by_query(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            project = project,
+            name = name
         ).order_by(Task_DB.due_date).all()
         tasks = []
         for task_db in tasks_db:
             task = Task(task_db)
             tasks.append(task) 
+        
+        project_option = get_existed_option_list()
 
         # Get specific tasks
         return render_template(
@@ -127,7 +146,8 @@ def task():
             form=form,
             status_statistics = status_statistics,
             due_date_statistics = due_date_statistics,
-            tasks = tasks
+            tasks = tasks,
+            project_option = project_option
         )
 
 
@@ -139,11 +159,14 @@ def step():
             'status_info'    : STATUS_LIST,
             'status_selected': [],
             'start_due_date' : '',
-            'end_due_date'   : ''
+            'end_due_date'   : '',
+            'name'           : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = datetime.today()
-        end_date        = datetime.today() + timedelta(days=NUMBER_OF_DAYS)
+        start_date      = datetime.combine(date.today(), time())
+        end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+        # project         = ''
+        name            = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -167,26 +190,33 @@ def step():
             form['end_due_date'] = temp_end_date_str
         else:
             form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
+        # project = request.args.get('ProjectQuery', '')
+        name = request.args.get('NameQuery', '')
+        if (name != ''):
+            form['name'] = name
 
         # Get task status statistics for graph
         status_statistics = get_step_status_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            name = name
         )
 
         # Get step due_date statistics for graph
         due_date_statistics = get_step_dueDate_analysis_data(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            name = name
         )
 
         # Get step data in table
         steps_db = get_Step_DB_by_query(
             statuses = input_statuses,
             start_due_date = start_date,
-            end_due_date = end_date
+            end_due_date = end_date,
+            name = name
         ).order_by(Step_DB.due_date).all()
         steps = []
         for step_db in steps_db:
@@ -208,12 +238,14 @@ def task_detail(id):
     if (request.method == 'GET'):
         task_data = Task(id)
         steps     = task_data.get_steps()
+        project_option = get_existed_option_list()
         return render_template(
             'dandori_mngmnt/task_detail.html',
             task  = task_data,
             steps = steps,
             comments = task_data.get_comments(),
-            parent_id = id
+            parent_id = id,
+            project_option = project_option
         )
 
 
@@ -394,11 +426,13 @@ def edit_step(id):
 def create_task():
     if (request.method == 'GET'):
         new_taskID = get_new_taskID()
+        project_option = get_existed_option_list()
         return render_template(
             'dandori_mngmnt/create_task.html',
             new_taskID = new_taskID,
             invalid_input_flag = False,
-            invalid_inputs = []
+            invalid_inputs = [],
+            project_option = project_option
         )
     
     if (request.method == 'POST'):
@@ -419,11 +453,13 @@ def create_task():
         # Error input
         if (invalid_input_flag):
             new_taskID = get_new_taskID()
+            project_option = get_existed_option_list()
             return render_template(
                 'dandori_mngmnt/create_task.html',
                 new_taskID = new_taskID,
                 invalid_input_flag = invalid_input_flag,
-                invalid_inputs = invalid_inputs
+                invalid_inputs = invalid_inputs,
+                project_option = project_option
             )
         
         db.session.add(new_task)
@@ -440,11 +476,13 @@ def create_task():
 
         if (invalid_input_flag):
             new_taskID = get_new_taskID()
+            project_option = get_existed_option_list()
             return render_template(
                 'dandori_mngmnt/create_task.html',
                 new_taskID = new_taskID,
                 invalid_input_flag = invalid_input_flag,
-                invalid_inputs = invalid_inputs
+                invalid_inputs = invalid_inputs,
+                project_option = project_option
             )
 
         db.session.add(new_step)

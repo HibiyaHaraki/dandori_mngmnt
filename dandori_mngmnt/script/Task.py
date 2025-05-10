@@ -174,7 +174,9 @@ def get_new_taskID():
 def get_Task_DB_by_query(
     statuses:list           = ALL_STATUS,
     start_due_date:datetime = None,
-    end_due_date:datetime   = None
+    end_due_date:datetime   = None,
+    project:str             = '',
+    name:str                = ''
 ):
     if (start_due_date is not None and end_due_date is not None):
         if (start_due_date > end_due_date):
@@ -191,17 +193,25 @@ def get_Task_DB_by_query(
         task_db_list = task_db_list.filter(Task_DB.due_date >= start_due_date)
     if (end_due_date != None):
         task_db_list = task_db_list.filter(Task_DB.due_date <  end_due_date)
+    
+    if (project != ''):
+        task_db_list = task_db_list.filter(Task_DB.project.contains(project))
+    
+    if (name != ''):
+        task_db_list = task_db_list.filter(Task_DB.name.contains(name))
 
     return task_db_list
 
 def get_task_status_analysis_data(
-    statuses:list = ALL_STATUS, 
+    statuses:list           = ALL_STATUS, 
     start_due_date:datetime = None, 
-    end_due_date:datetime = None
+    end_due_date:datetime   = None,
+    project:str             = '',
+    name:str                = ''
 ):
     # Get source task db list
     task_db_list = get_Task_DB_by_query(
-        statuses, start_due_date, end_due_date
+        statuses, start_due_date, end_due_date, project, name
     )
 
     # Get task status statistics for graph
@@ -228,13 +238,15 @@ def get_task_status_analysis_data(
     return status_statistics
 
 def get_task_dueDate_analysis_data(
-    statuses:list = ALL_STATUS, 
+    statuses:list           = ALL_STATUS, 
     start_due_date:datetime = None, 
-    end_due_date:datetime = None
+    end_due_date:datetime   = None,
+    project:str             = '',
+    name:str                = ''
 ):
     # Get source task db list
     task_db_list = get_Task_DB_by_query(
-        statuses, start_due_date, end_due_date
+        statuses, start_due_date, end_due_date, project, name
     )
 
     dueDate_statistics = {
@@ -274,4 +286,11 @@ def get_task_dueDate_analysis_data(
     
     return dueDate_statistics
 
-    
+def get_existed_option_list():
+    existed_project_list = []
+    print(existed_project_list)
+    task_db_list = db.session.query(Task_DB).all()
+    for task_db in task_db_list:
+        existed_project_list.append(str(task_db.project))
+    existed_project_list = list(set(existed_project_list))
+    return existed_project_list

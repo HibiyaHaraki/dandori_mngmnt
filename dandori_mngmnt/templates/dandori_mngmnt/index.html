@@ -1,11 +1,28 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
+<div class="row">
+    <div class="col-auto me-auto">
+        <h2>To do Steps (
+            <script>
+                var today=new Date(); 
+                var year = today.getFullYear();
+                var month = today.getMonth()+1;
+                var week = today.getDay();
+                var day = today.getDate();
+                document.write(year+"/"+month+"/"+day)
+            </script>    
+        )</h2>
+    </div>
+</div>
+{% include 'dandori_mngmnt/step_flow.html' %}
+
 <div class="row mb-5">
     <div class="col-xl">
         <div class="row w-100">
             <div class="col-auto me-auto">
-                <h2>To do Tasks</h2>
+                <h2>To do Tasks (ALL)</h2>
             </div>
             <div class="col-auto">
                 <button type="button" class="btn btn-primary" onclick="location.href='/create_task'">
@@ -40,6 +57,7 @@
         </table>
     </div>
 </div>
+<!--
 <div class="row mb-5">
     <div class="col-xl">
         <div class="row w-100">
@@ -73,5 +91,5 @@
         </table>
     </div>
 </div>
-
+-->
 {% endblock %}

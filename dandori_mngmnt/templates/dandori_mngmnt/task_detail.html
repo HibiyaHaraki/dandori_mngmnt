@@ -127,7 +127,12 @@
                         <label for="TaskProject" class="form-label">
                             Project
                         </label>
-                        <input type="text" class="form-control" id="TaskProject" name="TaskProject" value="{{ task.project }}">
+                        <input type="text" class="form-control" id="TaskProject" list="datalistOptions" name="TaskProject" value="{{ task.project }}">
+                        <datalist id="datalistOptions">
+                            {% for project_name in project_option %}
+                            <option value="{{ project_name }}">
+                            {% endfor %}
+                        </datalist>
                     </div>
                     <div class="mb-3">
                         <label for="TaskAssignedBy" class="form-label">
@@ -224,7 +229,9 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
+
+{% include 'dandori_mngmnt/step_flow.html' %}
 
 {% include 'dandori_mngmnt/comments.html' %}
 
