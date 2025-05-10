@@ -1,0 +1,82 @@
+{% block content %}
+<div class="row mb-5">
+    <div class="col-auto me-auto">
+        <h2>To do Tasks</h2>
+    </div>
+    <table class="table table-sm">
+        <thead class="sticky-top">
+            <tr>
+                <th class="w-25 text-center">
+                    <h5><span class="badge bg-secondary">OPEN</span></h5>
+                </th>
+                <th class="w-25 text-center">
+                    <h5><span class="badge bg-primary">IN PROGRESS</span></h5>
+                </th>
+                <th class="w-25 text-center">
+                    <h5><span class="badge bg-warning">WAIT</span></h5>
+                </th>
+                <th class="w-25 text-center">
+                    <h5><span class="badge bg-success">DONE</span></h5>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <tr>
+                <td>
+                    {% for task in tasks %}
+                    {% if task.status.state_str == "OPEN" %}
+                    <div class="card mx-auto my-1" style="width: 18rem;">
+                        <div class="card-header">{{ task.name }}</div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></h6>
+                            <a href="{{ task.url }}">{{ task.sysID }}</a>
+                            <a href="/TASK/{{ task.parent_task }}">TASK/{{ task.parent_task }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="overflow-y-auto">
+                    {% for task in tasks %}
+                    {% if task.status.state_str == "IN PROGRESS" %}
+                    <div class="card mx-auto my-1" style="width: 18rem;">
+                        <div class="card-header">{{ task.name }}</div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></h6>
+                            <a href="{{ task.url }}">{{ task.sysID }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="overflow-y-auto">
+                    {% for task in tasks %}
+                    {% if task.status.state_str == "WAIT" %}
+                    <div class="card mx-auto my-1" style="width: 18rem;">
+                        <div class="card-header">{{ task.name }}</div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></h6>
+                            <a href="{{ task.url }}">{{ task.sysID }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="overflow-y-auto">
+                    {% for task in tasks %}
+                    {% if task.status.state_str == "DONE" %}
+                    <div class="card mx-auto my-1" style="width: 18rem;">
+                        <div class="card-header">{{ task.name }}</div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></h6>
+                            <a href="{{ task.url }}">{{ task.sysID }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
