@@ -33,10 +33,14 @@
         <table class="table table-dark table-striped text-wrap">
             <thead>
                 <tr>
-                    <th class="align-middle text-center" scope="col">ID</th>
-                    <th class="align-middle text-center" scope="col">Status</th>
-                    <th scope="col">Task Name</th>
-                    <th class="align-middle text-center" scope="col">Due Date</th>
+                    <th class="align-middle text-center" scope="col" rowspan="2">ID</th>
+                    <th class="align-middle text-center" scope="col" rowspan="2">Status</th>
+                    <th scope="col" class="align-middle" rowspan="2">Task Name</th>
+                    <th class="align-middle text-center" scope="col" colspan="2">Due Date</th>
+                </tr>
+                <tr>
+                    <th class="align-middle text-center" scope="col">Task</th>
+                    <th class="align-middle text-center" scope="col">Next</th>
                 </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -51,6 +55,7 @@
                             {{ task.name }}
                         </td>
                         <td class="align-middle text-center"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></td>
+                        <td class="align-middle text-center"><span class="text-nowrap {{ task.next_step_due_date.state }}">{{ task.next_step_due_date.str }}</span></td>
                     </tr>
                 {% endfor %}
             </tbody>
