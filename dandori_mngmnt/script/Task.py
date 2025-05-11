@@ -215,17 +215,9 @@ def get_Task_DB_by_query(
     return task_db_list
 
 def get_task_status_analysis_data(
-    statuses:list           = ALL_STATUS, 
-    start_due_date:datetime = None, 
-    end_due_date:datetime   = None,
-    project:str             = '',
-    name:str                = ''
+    statuses:list,
+    task_db_list:list
 ):
-    # Get source task db list
-    task_db_list = get_Task_DB_by_query(
-        statuses, start_due_date, end_due_date, project, name
-    )
-
     # Get task status statistics for graph
     status_statistics = {
         'labels' : [],
@@ -250,16 +242,9 @@ def get_task_status_analysis_data(
     return status_statistics
 
 def get_task_dueDate_analysis_data(
-    statuses:list           = ALL_STATUS, 
-    start_due_date:datetime = None, 
-    end_due_date:datetime   = None,
-    project:str             = '',
-    name:str                = ''
+    statuses:list,
+    task_db_list
 ):
-    # Get source task db list
-    task_db_list = get_Task_DB_by_query(
-        statuses, start_due_date, end_due_date, project, name
-    )
 
     dueDate_statistics = {
         'labels' : [],
