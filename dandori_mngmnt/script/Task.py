@@ -5,6 +5,7 @@
 #
 
 import json
+import copy
 from datetime import datetime, timedelta, time
 
 # Database model
@@ -32,21 +33,32 @@ class Task():
         elif (type(input) is Task_DB):
             task_db = input
         
-        self.id          = task_db.id
-        self.sysID       = "TASK/" + str(self.id)
-        self.name        = task_db.name
-        self.description = task_db.description
-        self.project     = task_db.project
-        self.criteria    = task_db.criteria
-        self.due_date    = Due_date(task_db.due_date,status=task_db.status)
-        self.status      = Status(task_db.status)
-        self.assigned_by = task_db.assigned_by
-        self.url         = "/" + self.sysID
+        self.id                 = task_db.id
+        self.sysID              = "TASK/" + str(self.id)
+        self.name               = task_db.name
+        self.description        = task_db.description
+        self.project            = task_db.project
+        self.criteria           = task_db.criteria
+        self.due_date           = Due_date(task_db.due_date,status=task_db.status)
+        self.status             = Status(task_db.status)
+        self.assigned_by        = task_db.assigned_by
+        self.url                = "/" + self.sysID
         # self.steps_json  = task_db.steps
-        self.steps       = json.loads(task_db.steps)
-        self.comments    = json.loads(task_db.comments)
+        self.steps              = json.loads(task_db.steps)
+        self.comments           = json.loads(task_db.comments)
+        self.next_step_due_date = self.get_next_due_date()
     
-    # Up@date database data of Task
+    # Get next due date in this task
+    def get_next_due_date(self):
+        next_step_due_date = self.due_date
+        for step_idx in self.steps:
+            temp_step = Step(step_idx)
+            if (temp_step.status.state_str != "DONE"):
+                if (temp_step.due_date.due_date < next_step_due_date.due_date):
+                    next_step_due_date = temp_step.due_date
+        return next_step_due_date
+    
+    # Update database data of Task
     def update(self):
         updated_task_db = Task_DB(
             id          = self.id,
@@ -288,7 +300,6 @@ def get_task_dueDate_analysis_data(
 
 def get_existed_option_list():
     existed_project_list = []
-    print(existed_project_list)
     task_db_list = db.session.query(Task_DB).all()
     for task_db in task_db_list:
         existed_project_list.append(str(task_db.project))

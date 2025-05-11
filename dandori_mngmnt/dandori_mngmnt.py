@@ -33,7 +33,7 @@ NUMBER_OF_DAYS = 30
 def index():
     # Get tasks
     filtered_tasks_db = db.session.query(Task_DB) \
-        .filter(Task_DB.due_date != "DONE") \
+        .filter(Task_DB.status != "DONE") \
         .order_by(Task_DB.due_date) \
         .order_by(Task_DB.id.desc())
     to_do_tasks = []
@@ -42,24 +42,23 @@ def index():
         to_do_tasks.append(task)
 
     # Get Steps
-    print(datetime.today() + timedelta(days=1))
     filtered_steps_db_today = db.session.query(Step_DB) \
         .filter(Step_DB.due_date >= datetime.combine(date.today(), time()))\
         .filter(Step_DB.due_date <  datetime.combine(date.today(), time()) + timedelta(days=1))\
-        .order_by(Step_DB.due_date) \
-        .order_by(Step_DB.id.desc())
+        .order_by(Step_DB.due_date)
     filtered_steps_db_past = db.session.query(Step_DB) \
-        .filter(Task_DB.due_date != "DONE") \
+        .filter(Step_DB.status != "DONE") \
         .filter(Step_DB.due_date < datetime.combine(date.today(), time()))\
-        .order_by(Step_DB.due_date) \
-        .order_by(Step_DB.id.desc())
+        .order_by(Step_DB.due_date)
     to_do_steps = []
-    for step_db in filtered_steps_db_past:
-        step = Step(step_db)
-        to_do_steps.append(step)
-    for step_db in filtered_steps_db_today:
-        step = Step(step_db)
-        to_do_steps.append(step)
+    if (filtered_steps_db_past.count() > 0):
+        for step_db in filtered_steps_db_past:
+            step = Step(step_db)
+            to_do_steps.append(step)
+    if (filtered_steps_db_today.count() > 0):
+        for step_db in filtered_steps_db_today:
+            step = Step(step_db)
+            to_do_steps.append(step)
     return render_template(
         'dandori_mngmnt/index.html',
         to_do_tasks = to_do_tasks,

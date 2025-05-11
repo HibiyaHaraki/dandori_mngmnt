@@ -66,8 +66,12 @@
         -->
         </div>
         <div class="detail_due_date my-3">
-            <span class="todo_type">Due Date: </span>
+            <span class="todo_type">Task Due Date: </span>
             <span class="{{ task.due_date.state }} text-nowrap">{{ task.due_date.str }}</span>
+        </div>
+        <div class="detail_due_date my-3">
+            <span class="todo_type">Next Due Date: </span>
+            <span class="{{ task.next_step_due_date.state }} text-nowrap">{{ task.next_step_due_date.str }}</span>
         </div>
         <div class="detail_due_date my-3">
             <span class="todo_type">Assigned by: </span>
