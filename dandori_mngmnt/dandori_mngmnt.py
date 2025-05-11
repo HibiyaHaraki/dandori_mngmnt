@@ -36,7 +36,7 @@ def index():
         .filter(Task_DB.status != "DONE") \
         .order_by(Task_DB.due_date) \
         .order_by(Task_DB.id.desc())
-    to_do_tasks = []
+    to_do_tasks    = []
     for task_db in filtered_tasks_db:
         task = Task(task_db)
         to_do_tasks.append(task)
@@ -140,9 +140,27 @@ def task():
             name = name
         ).order_by(Task_DB.due_date).all()
         tasks = []
+        tasks_id = []
         for task_db in tasks_db:
             task = Task(task_db)
-            tasks.append(task) 
+            tasks.append(task)
+            tasks_id.append(task_db.id)
+        
+        # Get next due date
+        tasks_db = get_Task_DB_by_query(
+            statuses = input_statuses,
+            project = project,
+            name = name
+        ).order_by(Task_DB.due_date).all()
+        for task_db in tasks_db:
+            if (task_db.id not in tasks_id):
+                task = Task(task_db)
+                if (
+                    task.next_step_due_date.due_date >= start_date
+                    and
+                    task.next_step_due_date.due_date <  end_date
+                ):
+                    tasks.append(task)
         
         project_option = get_existed_option_list()
 
