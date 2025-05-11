@@ -5,6 +5,7 @@
 #
 
 from flask import render_template, request, url_for, redirect
+from sqlalchemy import union_all
 from datetime import datetime, date, timedelta, time
 import json, copy
 
@@ -112,47 +113,29 @@ def task():
         name    = request.args.get('NameQuery', '')
         if (name != ''):
             form['name'] = name
-
-        # Get task status statistics for graph
-        status_statistics = get_task_status_analysis_data(
-            statuses = input_statuses,
-            start_due_date = start_date,
-            end_due_date = end_date,
-            project = project,
-            name = name
-        )
-
-        # Get step due_date statistics for graph
-        due_date_statistics = get_task_dueDate_analysis_data(
-            statuses = input_statuses,
-            start_due_date = start_date,
-            end_due_date = end_date,
-            project = project,
-            name = name
-        )
         
         # Get task data in table
-        tasks_db = get_Task_DB_by_query(
+        tasks_db_due_date = get_Task_DB_by_query(
             statuses = input_statuses,
             start_due_date = start_date,
             end_due_date = end_date,
             project = project,
             name = name
-        ).order_by(Task_DB.due_date).all()
+        ).order_by(Task_DB.due_date)
         tasks = []
         tasks_id = []
-        for task_db in tasks_db:
+        for task_db in tasks_db_due_date.all():
             task = Task(task_db)
             tasks.append(task)
             tasks_id.append(task_db.id)
         
         # Get next due date
-        tasks_db = get_Task_DB_by_query(
+        tasks_db_next_due_date = get_Task_DB_by_query(
             statuses = input_statuses,
             project = project,
             name = name
-        ).order_by(Task_DB.due_date).all()
-        for task_db in tasks_db:
+        ).order_by(Task_DB.due_date)
+        for task_db in tasks_db_next_due_date.all():
             if (task_db.id not in tasks_id):
                 task = Task(task_db)
                 if (
@@ -161,6 +144,21 @@ def task():
                     task.next_step_due_date.due_date <  end_date
                 ):
                     tasks.append(task)
+                    tasks_id.append(task_db.id)
+        
+        tasks_db = db.session.query(Task_DB).filter(Task_DB.id.in_(tasks_id))
+
+        # Get task status statistics for graph
+        status_statistics = get_task_status_analysis_data(
+            statuses = input_statuses,
+            task_db_list = tasks_db
+        )
+
+        # Get step due_date statistics for graph
+        due_date_statistics = get_task_dueDate_analysis_data(
+            statuses = input_statuses,
+            task_db_list = tasks_db
+        )
         
         project_option = get_existed_option_list()
 
