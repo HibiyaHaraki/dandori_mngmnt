@@ -20,3 +20,11 @@
 .detail_description {
     min-height: 150px;
 }
+
+.one_card:hover{
+    box-shadow: 6px 6px 10px 0px var(--Iinconspicuous-color);
+}
+
+.one_card:active{
+    transform: scale(0.97);
+}

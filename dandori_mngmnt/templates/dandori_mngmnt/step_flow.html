@@ -22,56 +22,56 @@
                 <td>
                     {% for step in steps %}
                     {% if step.status.state_str == "OPEN" %}
-                    <div class="card mx-auto my-1" style="width: 18rem;">
-                        <div class="card-header">{{ step.name }}</div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
-                            <a href="{{ step.url }}">{{ step.sysID }}</a>
-                            <a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a>
+                    <a style="text-decoration: none;" href="{{ step.url }}">
+                        <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                            <div class="card-header">{{ step.name }}</div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endif %}
                     {% endfor %}
                 </td>
                 <td class="overflow-y-auto">
                     {% for step in steps %}
                     {% if step.status.state_str == "IN PROGRESS" %}
-                    <div class="card mx-auto my-1" style="width: 18rem;">
-                        <div class="card-header">{{ step.name }}</div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
-                            <a href="{{ step.url }}">{{ step.sysID }}</a>
-                            <a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a>
+                    <a style="text-decoration: none;" href="{{ step.url }}">
+                        <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                            <div class="card-header">{{ step.name }}</div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endif %}
                     {% endfor %}
                 </td>
                 <td class="overflow-y-auto">
                     {% for step in steps %}
                     {% if step.status.state_str == "WAIT" %}
-                    <div class="card mx-auto my-1" style="width: 18rem;">
-                        <div class="card-header">{{ step.name }}</div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
-                            <a href="{{ step.url }}">{{ step.sysID }}</a>
-                            <a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a>
+                    <a style="text-decoration: none;" href="{{ step.url }}">
+                        <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                            <div class="card-header">{{ step.name }}</div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endif %}
                     {% endfor %}
                 </td>
                 <td class="overflow-y-auto">
                     {% for step in steps %}
                     {% if step.status.state_str == "DONE" %}
-                    <div class="card mx-auto my-1" style="width: 18rem;">
-                        <div class="card-header">{{ step.name }}</div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
-                            <a href="{{ step.url }}">{{ step.sysID }}</a>
-                            <a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a>
+                    <a style="text-decoration: none;" href="{{ step.url }}">
+                        <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                            <div class="card-header">{{ step.name }}</div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></h6>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endif %}
                     {% endfor %}
                 </td>
