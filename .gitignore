@@ -2,6 +2,7 @@
 plan/
 model-en-sm/
 #bert-base-uncased/
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

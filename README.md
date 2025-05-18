@@ -26,18 +26,15 @@ pip install transformers torch scipy
 1. Please access to [Vosk Models](https://alphacephei.com/vosk/models) and download ["vosk-model-en-us-0.22-lgraph"](https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip)
 2. Please unzip and put under your repo as "model-en-sm"
 
-### Start dandori_mngmnt Web app
-After that, you can start this web application by following command.
+### Start dandori_mngmnt app
+You can start by running either `.bat` file or `.py` file like below.
 
 ```
-start_dandori_mngmnt.bat
+python start_app.py
 ```
 
-### Start dandori_mngmnt Sound app
-After that, you can start sound application by following command.
-
 ```
-start_dandori_sound.bat
+start_app.bat
 ```
 
 ## How to use this Web app
@@ -79,4 +76,5 @@ On this function, we can do following things.
 
 ## What is possible reaction for sound app?
 Currently this app can respond only following question.
-* What kind of task do I have to do today?
+* What kind of task do I need to finish today?
+* What kind of action do I need to do?

@@ -8,6 +8,13 @@ flask = "*"
 flask-sqlalchemy = "*"
 pywin32 = "*"
 sqlalchemy = "*"
+sounddevice = "*"
+pyttsx = "*"
+vosk = "*"
+transformers = "*"
+torch = "*"
+scipy = "*"
+pyttsx3 = "*"
 
 [dev-packages]
 
