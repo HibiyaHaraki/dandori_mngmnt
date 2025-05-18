@@ -8,11 +8,11 @@ import json
 from datetime import datetime
 
 # Database model
-from dandori_mngmnt import db
-from dandori_mngmnt.models.Comment_DB import Comment_DB
+from ..db import db
+from ..models.Comment_DB import Comment_DB
 
 # Required script
-from dandori_mngmnt.script.Due_date   import STR_FORMAT
+from .Due_date   import STR_FORMAT
 
 # Comment class definition
 class Comment():

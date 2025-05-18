@@ -5,7 +5,7 @@
 #
 
 from datetime import datetime
-from dandori_mngmnt import db
+from ..db import db
 
 # Commnet database model
 class Comment_DB(db.Model):

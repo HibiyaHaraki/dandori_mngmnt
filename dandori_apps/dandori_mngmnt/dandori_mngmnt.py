@@ -4,30 +4,28 @@
 # dandori_mngmnt.py
 #
 
+# Web Application
 from flask import render_template, request, url_for, redirect
-from sqlalchemy import union_all
 from datetime import datetime, date, timedelta, time
-import json, copy
 
-# Application
-from dandori_mngmnt import app
+from ..db   import db
+from dandori_apps.dandori_mngmnt import app
 
-# Database Model
-from dandori_mngmnt import db
-from dandori_mngmnt.models.Task_DB     import Task_DB
-from dandori_mngmnt.models.Step_DB     import Step_DB
-from dandori_mngmnt.models.Comment_DB  import Comment_DB
+from ..models.Task_DB     import Task_DB
+from ..models.Step_DB     import Step_DB
+from ..models.Comment_DB  import Comment_DB
 
 # Required scripts
-from dandori_mngmnt.script.Task     import *
-from dandori_mngmnt.script.Step     import *
-from dandori_mngmnt.script.Comment  import *
-from dandori_mngmnt.script.Due_date import *
-from dandori_mngmnt.script.Status   import *
+from ..script.Task     import *
+from ..script.Step     import *
+from ..script.Comment  import *
+from ..script.Due_date import *
+from ..script.Status   import *
 
 # Static definition
 NUMBER_OF_TODO = 10
 NUMBER_OF_DAYS = 30
+
 
 # Index.html
 @app.route('/')

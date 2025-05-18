@@ -8,13 +8,13 @@ import json
 from datetime import datetime, timedelta, time
 
 # Database model
-from dandori_mngmnt import db
-from dandori_mngmnt.models.Step_DB import Step_DB
+from ..db import db
+from ..models.Step_DB import Step_DB
 
 # Required script
-from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
-from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
-from dandori_mngmnt.script.Comment  import Comment
+from .Due_date import Due_date, JS_TIME_FORMAT
+from .Status   import Status, STATUS_LIST, ALL_STATUS
+from .Comment  import Comment
 
 
 # Step class definition

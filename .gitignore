@@ -1,5 +1,7 @@
 # Project specific
 plan/
+model-en-sm/
+#bert-base-uncased/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

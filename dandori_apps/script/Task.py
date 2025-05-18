@@ -9,14 +9,14 @@ import copy
 from datetime import datetime, timedelta, time
 
 # Database model
-from dandori_mngmnt import db
-from dandori_mngmnt.models.Task_DB import Task_DB
+from ..db import db
+from ..models.Task_DB import Task_DB
 
 # Required script
-from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
-from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
-from dandori_mngmnt.script.Comment  import Comment
-from dandori_mngmnt.script.Step     import Step
+from .Due_date import Due_date, JS_TIME_FORMAT
+from .Status   import Status, STATUS_LIST, ALL_STATUS
+from .Comment  import Comment
+from .Step     import Step
 
 # Task class definition
 class Task():
