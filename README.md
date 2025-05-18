@@ -17,16 +17,30 @@ Then you need to install Flask by following commands.
 
 ```
 pip install flask flask-sqlalchemy
+pip install sounddevice  pyttsx3 
+pip install vosk
+pip install transformers torch scipy
 ```
 
-### Start dandori_mngmnt
+# Download vosk model
+1. Please access to [Vosk Models](https://alphacephei.com/vosk/models) and download ["vosk-model-en-us-0.22-lgraph"](https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip)
+2. Please unzip and put under your repo as "model-en-sm"
+
+### Start dandori_mngmnt Web app
 After that, you can start this web application by following command.
 
 ```
 start_dandori_mngmnt.bat
 ```
 
-## How to use this app
+### Start dandori_mngmnt Sound app
+After that, you can start sound application by following command.
+
+```
+start_dandori_sound.bat
+```
+
+## How to use this Web app
 This Todo management app have 2 kind of to do format
 
 ### Data type
@@ -62,3 +76,7 @@ On this function, we can do following things.
 * Add comment on each Task & Step
 * Manage the statusof each Task & Steps (We can change the Step status manually. Task status automatically change due to the steps status.)
     ![Status Management](img/Status_Managementr.png)
+
+## What is possible reaction for sound app?
+Currently this app can respond only following question.
+* What kind of task do I have to do today?
