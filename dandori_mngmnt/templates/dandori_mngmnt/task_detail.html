@@ -46,10 +46,6 @@
     </div>
     <div class="col-lg-3 col-lg-auto">
         <div class="btn-group mb-2">
-            <button type="button" class="btn btn-{{ task.status.state_color }}" aria-expanded="false" disabled>
-                {{ task.status.state_str }}
-            </button>
-        <!--
             <button type="button" class="btn dropdown-toggle btn-{{ task.status.state_color }}" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ task.status.state_str }}
             </button>
@@ -63,15 +59,10 @@
                 </li>
                 {% endfor %}
             </ul>
-        -->
         </div>
         <div class="detail_due_date my-3">
             <span class="todo_type">Task Due Date: </span>
             <span class="{{ task.due_date.state }} text-nowrap">{{ task.due_date.str }}</span>
-        </div>
-        <div class="detail_due_date my-3">
-            <span class="todo_type">Next Due Date: </span>
-            <span class="{{ task.next_step_due_date.state }} text-nowrap">{{ task.next_step_due_date.str }}</span>
         </div>
         <div class="detail_due_date my-3">
             <span class="todo_type">Assigned by: </span>
@@ -83,24 +74,6 @@
     <div class="col-auto me-auto">
         <span class="todo_type mt-5">Steps: </span>
     </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-primary btn-sm" onclick="location.href='/TASK/{{ task.id }}/create_step'">Add Step</button>
-    </div>
-</div>
-<div>
-    <table class="table table-dark table-striped">
-        <tbody>
-            {% for step in steps %}
-            <tr>
-                <th class="align-middle text-center"><span class="text-nowrap">Step {{ loop.index0 + 1 }}</span></th>
-                <td class="align-middle text-center"><a href="{{ step.url }}" >{{ step.sysID }}</a></td>
-                <td class="align-middle text-center"><span class="badge text-bg-{{ step.status.state_color }}">{{ step.status.state_str }}</span></td>
-                <td>{{ step.name }}</td>
-                <td class="align-middle text-center"><span class="{{ step.due_date.state }} text-nowrap">{{ step.due_date.str }}</span></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 
 <!-- Modal -->
@@ -112,7 +85,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="/create_task" method="POST" id="EditTask">
+            <form action="/{{ task.sysID }}/edit_task" method="POST" id="EditTask">
                 <fieldset>
                     <div class="row mb-3">
                         <div class="col-2">
@@ -165,66 +138,6 @@
                         </label>
                         <textarea class="form-control" id="TaskDescription" name="TaskDescription" rows="5">{{ task.description}}</textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="TaskDescription" class="form-label">
-                            Steps
-                        </label>
-                        <ul class="list-group list-group-flush" id="Form_StepChange">
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">Current Step</span>
-                                    </div>
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">ID</span>
-                                    </div>
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">Status</span>
-                                    </div>
-                                    <div class="col-6 d-table m-0 p-0">
-                                        <span class="d-table-cell align-middle">Step Name</span>
-                                    </div>
-                                    <div class="col-3 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">Due Date</span>
-                                    </div>
-                                </div>
-                            </li>
-                            {% for step in steps %}
-                            <li class="list-group-item" draggable="true" id="{{ step.id }}">
-                                <div class="row">
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle text-nowrap">
-                                            {{ loop.index0 + 1 }}
-                                        </span>
-                                    </div>
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">
-                                            <a href="{{ step.url }}">
-                                                {{ step.sysID }}
-                                            </a>
-                                        </span>
-                                    </div>
-                                    <div class="col-1 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle">
-                                            <span class="badge text-bg-{{ step.status.state_color }}">{{ step.status.state_str }}</span>
-                                        </span>
-                                    </div>
-                                    <div class="col-6 d-table m-0 p-0">
-                                        <span class="d-table-cell align-middle">
-                                            {{ step.name }}
-                                        </span>
-                                    </div>
-                                    <div class="col-3 d-table m-0 p-0">
-                                        <span class="d-table-cell text-center align-middle text-nowrap {{ step.due_date.state }}">
-                                            {{ step.due_date.str }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        <input type="text" class="d-none form-control" id="TaskStepOrder" name="TaskStepOrder" value="{{ task.steps_json }}">
-                    </div>
                 </fieldset>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Edit</button>
@@ -235,53 +148,5 @@
     </div>
 </div>
 
-{% include 'dandori_mngmnt/step_flow.html' %}
-
 {% include 'dandori_mngmnt/comments.html' %}
-
-<script>
-    document.getElementById("EditTask").action = location.pathname + "/edit_task";
-    
-    window.onload = function(){
-        step_objects = document.getElementById("Form_StepChange").querySelectorAll('li')
-        var step_order = []
-        for (var i=1; i<step_objects.length; i++) {
-            step_order.push(parseInt(step_objects[i].id, 10))
-        }
-        document.getElementById("TaskStepOrder").value = JSON.stringify(step_order)
-        console.log(document.getElementById("TaskStepOrder").value)
-    }
-
-    document.getElementById("Form_StepChange").querySelectorAll('li').forEach (element => {
-        element.ondragstart = function () {
-            event.dataTransfer.setData('text/plain', event.target.id);
-        };
-            
-        element.ondragover = function () {
-            event.preventDefault();
-            this.style.borderTop = '3px solid';
-        };
-
-        element.ondragleave = function () {
-            this.style.borderTop = "";
-        };
-
-        element.ondrop = function () {
-            event.preventDefault();
-            let id = event.dataTransfer.getData('text');
-            let element_drag = document.getElementById(id);
-            this.parentNode.insertBefore(element_drag, this);
-            this.style.borderTop = '';
-
-            // console.log(document.getElementById("TaskStepOrder").value)
-            step_objects = document.getElementById("Form_StepChange").querySelectorAll('li')
-            var step_order = []
-            for (var i=1; i<step_objects.length; i++) {
-                step_order.push(parseInt(step_objects[i].id, 10))
-            }
-            document.getElementById("TaskStepOrder").value = JSON.stringify(step_order)
-            console.log(document.getElementById("TaskStepOrder").value)
-        };
-    });
-</script>
 {% endblock %}

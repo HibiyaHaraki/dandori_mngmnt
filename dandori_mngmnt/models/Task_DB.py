@@ -18,6 +18,5 @@ class Task_DB(db.Model):
     criteria        = db.Column(db.String( 511), nullable    = False)
     due_date        = db.Column(db.DateTime    , nullable    = False)
     status          = db.Column(db.String(  15), nullable    = False)
-    steps           = db.Column(db.String( 511)                     )
     assigned_by     = db.Column(db.String( 255), nullable    = False)
     comments        = db.Column(db.String( 511), nullable    = False)

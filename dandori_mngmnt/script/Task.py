@@ -5,7 +5,6 @@
 #
 
 import json
-import copy
 from datetime import datetime, timedelta, time
 
 # Database model
@@ -16,7 +15,6 @@ from dandori_mngmnt.models.Task_DB import Task_DB
 from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
 from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
 from dandori_mngmnt.script.Comment  import Comment
-from dandori_mngmnt.script.Step     import Step
 
 # Task class definition
 class Task():
@@ -43,20 +41,7 @@ class Task():
         self.status             = Status(task_db.status)
         self.assigned_by        = task_db.assigned_by
         self.url                = "/" + self.sysID
-        # self.steps_json  = task_db.steps
-        self.steps              = json.loads(task_db.steps)
         self.comments           = json.loads(task_db.comments)
-        self.next_step_due_date = self.get_next_due_date()
-    
-    # Get next due date in this task
-    def get_next_due_date(self):
-        next_step_due_date = self.due_date
-        for step_idx in self.steps:
-            temp_step = Step(step_idx)
-            if (temp_step.status.state_str != "DONE"):
-                if (temp_step.due_date.due_date < next_step_due_date.due_date):
-                    next_step_due_date = temp_step.due_date
-        return next_step_due_date
     
     # Update database data of Task
     def update(self):
@@ -68,35 +53,17 @@ class Task():
             criteria    = self.criteria,
             due_date    = self.due_date.due_date,
             status      = self.status.state_str,
-            steps       = json.dumps(self.steps),
             assigned_by = self.assigned_by,
             comments    = json.dumps(self.comments)
         )
         db.session.merge(updated_task_db)
         db.session.commit()
-    
-    def get_steps(self):
-        steps = []
-        for stepID in self.steps:
-            steps.append(Step(stepID))
-        return steps
 
     def get_comments(self):
         comments = []
         for commentID in self.comments:
             comments.append(Comment(commentID))
         return comments
-    
-    def update_TaskStatus(self):
-        # Get step data
-        steps = self.get_steps()
-        step_status = []
-        for step in steps:
-            step_status.append(
-                step.status
-            )
-        
-        self.status.update_TaskStatus(step_status)
 
 # Check input
 def check_task_input(
@@ -169,7 +136,6 @@ def add_new_Task(
         criteria    = form_criteria,
         due_date    = form_datetime_due_date,
         status      = new_task_status.state_str,
-        steps       = json.dumps([]),
         assigned_by = form_assignedby,
         comments    = json.dumps([])
     )

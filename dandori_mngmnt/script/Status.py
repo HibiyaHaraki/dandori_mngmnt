@@ -82,22 +82,3 @@ class Status():
                 self.state       = state_str
                 self.state_str   = STATUS_LIST.get(self.state)['str']
                 self.state_color = STATUS_LIST.get(self.state)['color']
-    
-    # Update Task status
-    def update_TaskStatus(self,step_status):
-        # Count each status numbers
-        step_status_list = []
-        for status in step_status:
-            step_status_list.append(status.state_str)
-        
-        # Rule
-        if (step_status_list.count("IN PROGRESS") > 0):
-            self.change_state("IN PROGRESS")
-        else:
-            if (step_status_list.count("WAIT") > 0):
-                self.change_state("WAIT")
-            else:
-                if (step_status_list.count("DONE") == len(step_status_list)):
-                    self.change_state("DONE")
-                else:
-                    self.change_state("OPEN")
