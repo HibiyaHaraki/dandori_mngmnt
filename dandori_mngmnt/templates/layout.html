@@ -15,7 +15,21 @@
 <body class="m-0 p-0 h-100">
     <div style="min-height: calc(100vh - 170px)">
         <header>
-            {% include 'dandori_mngmnt/navbar.html' %}
+            <nav class="navbar navbar-expand bg-primary" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Dandori Management</a>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/create_task">Add Task</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/TASK">Task Statistics</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </header>
 
         <div class="container-xl pt-3">

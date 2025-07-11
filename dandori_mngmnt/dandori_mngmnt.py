@@ -5,9 +5,7 @@
 #
 
 from flask import render_template, request, url_for, redirect
-from sqlalchemy import union_all
 from datetime import datetime, date, timedelta, time
-import json, copy
 
 # Application
 from dandori_mngmnt import app
