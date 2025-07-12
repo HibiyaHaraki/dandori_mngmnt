@@ -80,11 +80,39 @@ Link: /TASK/<int:id>
         </div>
     </div>
 </div>
-<div class="row mb-0">
+
+<!-- Link -->
+<div class="row mb-3">
     <div class="col-auto me-auto">
-        <span class="todo_type mt-5">Steps: </span>
+        <span class="todo_type">Links: </span>
+    </div>
+    <div class="col-auto">
+        <a type="button" class="btn btn-primary btn-sm" href="/TASK/{{ task.id }}/add_link">
+            <i class="bi bi-plus-lg"></i>
+        </a>
     </div>
 </div>
+<table class="table table-dark text-wrap">
+    {% for link_task in link_tasks %}
+        <tr>
+            <th class="align-middle text-center"><b>{{ link_task["relationship"] }}</b></th>
+            <th class="align-middle text-center"><a href='{{ link_task["Task"].url }}' >{{ link_task["Task"].sysID }}</a></td>
+            <td class="align-middle text-center"><span class='badge text-bg-{{ link_task["Task"].status.state_color }}'>{{ link_task["Task"].status.state_str }}</span></td>
+            <td>
+                {% if task.project != '' %}
+                [{{ link_task["Task"].project }}] 
+                {% endif %}
+                {{ link_task["Task"].name }}
+            </td>
+            <td class="align-middle text-center"><span class='text-nowrap {{ link_task["Task"].due_date.state }}'>{{ link_task["Task"].due_date.str }}</span></td>
+            <td>
+                <a type="button" class="btn btn-outline-danger btn-sm" href="/TASK/{{ task.id }}/remove_link?TaskID={{ link_task['Task'].id }}&Relationship={{ link_task['relationship'] }}">
+                    <i class="bi bi-x"></i>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
 
 <!-- Comment -->
 {% include 'dandori_mngmnt/comment_block/comments.html' %}

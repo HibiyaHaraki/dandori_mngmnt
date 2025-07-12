@@ -20,12 +20,13 @@ from dandori_mngmnt.script.Task     import *
 from dandori_mngmnt.script.Comment  import *
 from dandori_mngmnt.script.Due_date import *
 from dandori_mngmnt.script.Status   import *
+from dandori_mngmnt.script.Links    import *
 
 # Static definition
 NUMBER_OF_TODO = 10
 NUMBER_OF_DAYS = 30
 
-# Index.html
+# Index page
 @app.route('/')
 def index():
     # Get tasks
@@ -33,6 +34,7 @@ def index():
         .filter(Task_DB.status != "DONE") \
         .order_by(Task_DB.due_date) \
         .order_by(Task_DB.id.desc())
+
     to_do_tasks    = []
     for task_db in filtered_tasks_db:
         task = Task(task_db)
@@ -40,10 +42,10 @@ def index():
 
     return render_template(
         'dandori_mngmnt/index.html',
-        to_do_tasks = to_do_tasks
+        tasks = to_do_tasks
     )
 
-# Task.html
+# Task Overview page
 @app.route('/TASK', methods=['GET'])
 def task():
     if (request.method == 'GET'):
@@ -57,10 +59,10 @@ def task():
             'name'           : ''
         }
         input_statuses = ALL_STATUS
-        start_date      = datetime.combine(date.today(), time())
-        end_date        = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
-        project         = ''
-        name            = ''
+        start_date     = datetime.combine(date.today(), time())
+        end_date       = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+        project        = ''
+        name           = ''
 
         # Get input
         temp_input_statuses = request.args.getlist("status")
@@ -145,12 +147,22 @@ def task_detail(id):
     if (request.method == 'GET'):
         task_data = Task(id)
         project_option = get_existed_option_list()
+
+        # Link Task
+        link_tasks = []
+        for link in task_data.links:
+            link_tasks.append({
+                "relationship": link["relationship"],
+                "Task"        : Task(link["TaskID"])
+            })
+
         return render_template(
             'dandori_mngmnt/task_detail.html',
             task  = task_data,
             comments = task_data.get_comments(),
             parent_id = id,
-            project_option = project_option
+            project_option = project_option,
+            link_tasks = link_tasks
         )
 
 
@@ -187,7 +199,7 @@ def task_delete_comment(task_id,comment_id):
         current_task.update()
         return redirect(url_for('task_detail', id=task_id))
 
-
+# Edit Task data
 @app.route('/TASK/<int:id>/edit_task', methods=['POST'])
 def edit_task(id):
     if (request.method == 'POST'):
@@ -285,9 +297,11 @@ def create_task():
         
         return redirect(url_for('task_detail', id=parent_taskID))
 
+# Change status of task
 @app.route('/TASK/<int:id>/change_state', methods=['GET'])
 def step_change_state(id):
     if (request.method == 'GET'):
+
         # Update Step status
         task = Task(id)
         next_state_str = str(request.args.get('next_state', ''))
@@ -295,3 +309,76 @@ def step_change_state(id):
         task.update()
 
         return redirect(url_for('task_detail', id=id))
+
+# Add link to Task
+@app.route('/TASK/<int:id>/add_link', methods=['GET','POST'])
+def task_add_link(id):
+    if (request.method == 'GET'):
+        # Get Task ID
+        task = Task(id)
+
+        # Init
+        target_task_id = 1
+        target_task = Task(1)
+        target_task_relatinship = ""
+
+        # Get input
+        target_task_id = request.args.get('TargetTaskID_Check','')
+        target_task_relatinship = request.args.get('Relationship_Check','')
+
+        # Get target Task ID
+        if (target_task_id != ''):
+            target_task_id = int(target_task_id)
+            if (
+                target_task_id > 0
+                and
+                target_task_id <= db.session.query(Task_DB).count()
+            ):
+                target_task = Task(target_task_id)
+
+        return render_template(
+            'dandori_mngmnt/task_add_link.html',
+            task  = task,
+            relationships = get_relationship_list(),
+            target_task = target_task,
+            target_task_relationship = target_task_relatinship
+        )
+    
+    if (request.method == 'POST'):
+        # Get inputs
+        SourceTaskID = int(request.form.get('SourceTaskID_Confirm'))
+        TargetTaskID = int(request.form.get('TargetTaskID_Confirm'))
+        relationship =     request.form.get('Relationship_Confirm')
+
+        # Check condition
+        link_flag = check_link_condition(
+            SourceTaskID,
+            TargetTaskID,
+            relationship
+        )
+
+        if (link_flag):
+            res = add_task_link(
+                SourceTaskID,
+                TargetTaskID,
+                relationship
+            )
+        
+        return redirect(url_for('task_detail', id=SourceTaskID))
+
+# Add link to Task
+@app.route('/TASK/<int:id>/remove_link', methods=['GET'])
+def task_remove_link(id):
+    # Get input
+    SourceTaskID = id
+    TargetTaskID = int(request.args.get('TaskID',''))
+    relationship = request.args.get('Relationship','')
+
+    remove_task_link(
+        SourceTaskID,
+        TargetTaskID,
+        relationship
+    )
+
+    return redirect(url_for('task_detail', id=id))
+

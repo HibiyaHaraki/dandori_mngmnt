@@ -20,3 +20,4 @@ class Task_DB(db.Model):
     status          = db.Column(db.String(  15), nullable    = False)
     assigned_by     = db.Column(db.String( 255), nullable    = False)
     comments        = db.Column(db.String( 511), nullable    = False)
+    links           = db.Column(db.String( 511), nullable    = False)
