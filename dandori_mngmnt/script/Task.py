@@ -67,6 +67,25 @@ class Task():
         for commentID in self.comments:
             comments.append(Comment(commentID))
         return comments
+    
+    def _mermaid_command_input(self):
+        mermaid_input = []
+
+        for link in self.links:
+            input_command = {
+                "TargetTaskID": link["TaskID"],
+                "relationship": link["relationship"],
+                "SourceTaskID": self.id
+            }
+            mermaid_input.append(input_command)
+        
+        return mermaid_input
+
+    def get_mermaid_command(self):
+        mermaid_command_input = self._mermaid_command_input()
+        mermaid_command = generate_mermaid_command(mermaid_command_input)
+        return mermaid_command
+
 
 # Check input
 def check_task_input(
@@ -355,5 +374,3 @@ def remove_task_link(
 
     return True
 
-            
-    

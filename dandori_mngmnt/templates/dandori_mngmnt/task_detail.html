@@ -92,6 +92,8 @@ Link: /TASK/<int:id>
         </a>
     </div>
 </div>
+
+<!-- Link Task List -->
 <table class="table table-dark text-wrap">
     {% for link_task in link_tasks %}
         <tr>
@@ -113,6 +115,11 @@ Link: /TASK/<int:id>
         </tr>
     {% endfor %}
 </table>
+
+<!-- Link Flowchart -->
+<div class="mermaid">
+{{ chart_links }}
+</div>
 
 <!-- Comment -->
 {% include 'dandori_mngmnt/comment_block/comments.html' %}

@@ -149,12 +149,14 @@ def task_detail(id):
         project_option = get_existed_option_list()
 
         # Link Task
-        link_tasks = []
+        link_tasks  = []
+        chart_links = task_data.get_mermaid_command()
         for link in task_data.links:
             link_tasks.append({
                 "relationship": link["relationship"],
                 "Task"        : Task(link["TaskID"])
             })
+        
 
         return render_template(
             'dandori_mngmnt/task_detail.html',
@@ -162,7 +164,8 @@ def task_detail(id):
             comments = task_data.get_comments(),
             parent_id = id,
             project_option = project_option,
-            link_tasks = link_tasks
+            link_tasks = link_tasks,
+            chart_links = chart_links
         )
 
 
