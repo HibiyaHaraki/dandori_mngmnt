@@ -16,11 +16,27 @@ Abstract: Block template of task list
     <tbody class="table-group-divider">
         {% for link in links %}
             <tr>
-                <td scope="row" class="align-middle text-center"><a href="{{ link['SourceTask'].url }}" >{{ link['SourceTask'].sysID }}</a></td>
-                <td class="align-middle text-center"><span class="badge text-bg-{{ link['SourceTask'].status.state_color }}">{{ link['SourceTask'].status.state_str }}</span></td>
+                <td scope="row" class="align-middle text-center">
+                    <a href="{{ link['SourceTask'].url }}" data-bs-toggle="tooltip" data-bs-title="{{ link['SourceTask'].name }}">
+                        {{ link['SourceTask'].sysID }}
+                    </a>
+                </td>
+                <td class="align-middle text-center">
+                    <span class="badge text-bg-{{ link['SourceTask'].status.state_color }}">
+                        {{ link['SourceTask'].status.state_str }}
+                    </span>
+                </td>
                 <td><b>{{ link['relationship'] }}</b></td>
-                <td scope="row" class="align-middle text-center"><a href="{{ link['TargetTask'].url }}" >{{ link['TargetTask'].sysID }}</a></td>
-                <td class="align-middle text-center"><span class="badge text-bg-{{ link['TargetTask'].status.state_color }}">{{ link['TargetTask'].status.state_str }}</span></td>
+                <td scope="row" class="align-middle text-center">
+                    <a href="{{ link['TargetTask'].url }}" data-bs-toggle="tooltip" data-bs-title="{{ link['TargetTask'].name }}">
+                        {{ link['TargetTask'].sysID }}
+                    </a>
+                </td>
+                <td class="align-middle text-center">
+                    <span class="badge text-bg-{{ link['TargetTask'].status.state_color }}">
+                        {{ link['TargetTask'].status.state_str }}
+                    </span>
+                </td>
             </tr>
         {% endfor %}
     </tbody>
