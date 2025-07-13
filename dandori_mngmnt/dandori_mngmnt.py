@@ -468,6 +468,88 @@ def edit_task(id):
         
         return redirect(url_for('task_detail', id=id))
 
+# Page for adding the new task with link
+@app.route('/TASK/<int:task_id>/create_linked_task', methods=['GET', 'POST'])
+def create_linked_task(task_id):
+    if (request.method == 'GET'):
+        new_taskID = get_new_taskID()
+        project_option = get_existed_option_list()
+        return render_template(
+            'dandori_mngmnt/create_linked_task.html',
+            new_taskID = new_taskID,
+            invalid_input_flag = False,
+            invalid_inputs = [],
+            project_option = project_option,
+            task = Task(task_id),
+            relationships = get_relationship_list()
+        )
+    
+    if (request.method == 'POST'):
+        # Get form data
+        form_name         = request.form.get('TaskName')
+        form_project      = request.form.get('TaskProject')
+        form_assignedby   = request.form.get('TaskAssignedBy')
+        form_str_due_date = request.form.get('TaskDueDate')
+        form_criteria     = request.form.get('TaskCriteria')
+        form_description  = request.form.get('TaskDescription')
+
+        invalid_input_flag, invalid_inputs, new_task = add_new_Task(
+            form_name, form_str_due_date, form_criteria, form_assignedby,
+            form_project     = form_project,
+            form_description = form_description
+        )
+
+        # Error input
+        if (invalid_input_flag):
+            new_taskID = get_new_taskID()
+            project_option = get_existed_option_list()
+            return render_template(
+                'dandori_mngmnt/create_task.html',
+                new_taskID = new_taskID,
+                invalid_input_flag = invalid_input_flag,
+                invalid_inputs = invalid_inputs,
+                project_option = project_option
+            )
+        
+        db.session.add(new_task)
+        db.session.commit()
+        db.session.refresh(new_task)
+
+        if (invalid_input_flag):
+            new_taskID = get_new_taskID()
+            project_option = get_existed_option_list()
+            return render_template(
+                'dandori_mngmnt/create_task.html',
+                new_taskID = new_taskID,
+                invalid_input_flag = invalid_input_flag,
+                invalid_inputs = invalid_inputs,
+                project_option = project_option
+            )
+
+        created_Task = Task(new_task.id)
+        created_Task.update()
+
+        # Get inputs
+        SourceTaskID = new_task.id
+        TargetTaskID = task_id
+        relationship = request.form.get('Relationship_Check')
+
+        # Check condition
+        link_flag = check_link_condition(
+            SourceTaskID,
+            TargetTaskID,
+            relationship
+        )
+
+        if (link_flag):
+            res = add_task_link(
+                SourceTaskID,
+                TargetTaskID,
+                relationship
+            )
+        
+        return redirect(url_for('task_detail', id=new_task.id))
+
 # Page for adding the new task
 @app.route('/create_task', methods=['GET', 'POST'])
 def create_task():

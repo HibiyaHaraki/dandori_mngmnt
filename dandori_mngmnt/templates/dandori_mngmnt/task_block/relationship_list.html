@@ -26,7 +26,9 @@ Abstract: Block template of task list
                         {{ link['SourceTask'].status.state_str }}
                     </span>
                 </td>
-                <td><b>{{ link['relationship'] }}</b></td>
+                <td class="align-middle text-center">
+                    <b>{{ link['relationship'] }}</b>
+                </td>
                 <td scope="row" class="align-middle text-center">
                     <a href="{{ link['TargetTask'].url }}" data-bs-toggle="tooltip" data-bs-title="{{ link['TargetTask'].name }}">
                         {{ link['TargetTask'].sysID }}
