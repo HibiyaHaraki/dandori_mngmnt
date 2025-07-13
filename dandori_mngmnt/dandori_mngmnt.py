@@ -128,6 +128,15 @@ def task():
             statuses = input_statuses,
             task_db_list = tasks_db
         )
+
+        # Get Task link chart
+        mermaid_command_input = []
+        for task_db in tasks_db:
+            temp_mermaid_command_input = Task(task_db)._mermaid_command_input()
+            for command in temp_mermaid_command_input:
+                mermaid_command_input.append(command)
+        
+        link_chart = generate_mermaid_command(mermaid_command_input)
         
         project_option = get_existed_option_list()
 
@@ -138,7 +147,8 @@ def task():
             status_statistics = status_statistics,
             due_date_statistics = due_date_statistics,
             tasks = tasks,
-            project_option = project_option
+            project_option = project_option,
+            chart_links = link_chart
         )
 
 # Task detail Page

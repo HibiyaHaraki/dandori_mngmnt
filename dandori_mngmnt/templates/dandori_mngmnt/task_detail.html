@@ -117,8 +117,13 @@ Link: /TASK/<int:id>
 </table>
 
 <!-- Link Flowchart -->
-<div class="mermaid">
-{{ chart_links }}
+<div class="row mb-3">
+    <details>
+        <summary class="todo_type">Link Chart:</summary>
+        <div class="mermaid m-auto">
+        {{ chart_links }}
+        </div>
+    </details>
 </div>
 
 <!-- Comment -->

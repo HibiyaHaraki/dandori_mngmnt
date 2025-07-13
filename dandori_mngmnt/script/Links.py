@@ -11,6 +11,13 @@ LINK_LIST = [
     ["blocks"   , "is blocked by"  ]
 ]
 
+MERMAID_CONFIG = """
+---
+config:
+    theme: 'dark'
+---
+"""
+
 def get_relationship_list():
     link_list = []
     for links in LINK_LIST:
@@ -32,14 +39,51 @@ def get_pair_relationship(relationship:str):
                     if (link != relationship):
                         return link
 
+def remove_duplicated_relationship(links:list):
+    remove_list = []
+    # Find duplicated relationship
+    for idx, link in enumerate(links):
+        if (idx in remove_list):
+            continue
+        else:
+            for link_list in LINK_LIST:
+                if (link["relationship"] in link_list):
+                    for temp_idx, temp_link in enumerate(links):
+                        if (
+                            temp_link["TargetTaskID"] == link["TargetTaskID"]
+                            and
+                            temp_link["SourceTaskID"] == link["SourceTaskID"]
+                            and
+                            temp_link["relationship"] in link_list
+                            and
+                            idx != temp_idx
+                        ):
+                            remove_list.append(temp_idx)
+                        elif (
+                            temp_link["TargetTaskID"] == link["SourceTaskID"]
+                            and
+                            temp_link["SourceTaskID"] == link["TargetTaskID"]
+                            and
+                            temp_link["relationship"] in link_list
+                            and
+                            idx != temp_idx
+                        ):
+                            remove_list.append(temp_idx)
+                    break
+    
+    # Delete
+    remove_list = sorted(list(set(remove_list)),reverse=True)
+    for remove_idx in remove_list:
+        links.pop(remove_idx)
+    
+    return links
+
 def generate_mermaid_command(links:list):
-    output_command = """
----
-config:
-    theme: 'dark'
----
-"""
+    output_command = MERMAID_CONFIG
     output_command += "flowchart TB" + "\n"
+
+    # Links
+    links = remove_duplicated_relationship(links)
 
     # Convert Node Name
     for link in links:
