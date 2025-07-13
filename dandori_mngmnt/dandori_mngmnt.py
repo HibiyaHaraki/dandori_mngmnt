@@ -238,10 +238,18 @@ def task_link():
 
         # Get Task link chart
         mermaid_command_input = []
+        link_info = []
         for task_db in tasks_db:
             temp_mermaid_command_input = Task(task_db)._mermaid_command_input()
             for command in temp_mermaid_command_input:
                 mermaid_command_input.append(command)
+        for command in remove_duplicated_relationship(mermaid_command_input):    
+            temp_link_info = {
+                "TargetTask"   : Task(int(command["TargetTaskID"])),
+                "SourceTask"   : Task(int(command["SourceTaskID"])),
+                "relationship" : command["relationship"] 
+            }
+            link_info.append(temp_link_info)
         
         link_chart = generate_mermaid_command(mermaid_command_input)
         
@@ -253,7 +261,8 @@ def task_link():
             form=form,
             tasks = tasks,
             project_option = project_option,
-            chart_links = link_chart
+            chart_links = link_chart,
+            links = link_info
         )
 
 # Task Overview page
