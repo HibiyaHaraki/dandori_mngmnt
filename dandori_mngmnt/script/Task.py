@@ -15,7 +15,7 @@ from dandori_mngmnt.models.Task_DB import Task_DB
 from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
 from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
 from dandori_mngmnt.script.Comment  import Comment
-from dandori_mngmnt.script.Links    import *
+from dandori_mngmnt.script.Links    import generate_mermaid_command, get_relationship_list, get_pair_relationship
 
 # Task class definition
 class Task():
@@ -75,7 +75,9 @@ class Task():
             input_command = {
                 "TargetTaskID": link["TaskID"],
                 "relationship": link["relationship"],
-                "SourceTaskID": self.id
+                "SourceTaskID": self.id,
+                "TargetStatus": Task(int(link["TaskID"])).status.state_str,
+                "SourceStatus": self.status.state_str
             }
             mermaid_input.append(input_command)
         
@@ -373,4 +375,3 @@ def remove_task_link(
     TargetTask.update()
 
     return True
-

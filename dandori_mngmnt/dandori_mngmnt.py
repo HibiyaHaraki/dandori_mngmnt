@@ -27,22 +27,75 @@ NUMBER_OF_TODO = 10
 NUMBER_OF_DAYS = 30
 
 # Index page
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    # Get tasks
-    filtered_tasks_db = db.session.query(Task_DB) \
-        .filter(Task_DB.status != "DONE") \
-        .order_by(Task_DB.due_date) \
-        .order_by(Task_DB.id.desc())
+    # Inititalize input data
+    form = {
+        'status_info'    : STATUS_LIST,
+        'status_selected': [],
+        'start_due_date' : '',
+        'end_due_date'   : '',
+        'project'        : '',
+        'name'           : ''
+    }
+    input_statuses = ALL_STATUS
+    start_date     = datetime.combine(date.today(), time())
+    end_date       = datetime.combine(date.today(), time()) + timedelta(days=NUMBER_OF_DAYS)
+    project        = ''
+    name           = ''
 
-    to_do_tasks    = []
-    for task_db in filtered_tasks_db:
+    # Get input
+    temp_input_statuses = request.args.getlist("status")
+    if (len(temp_input_statuses) > 0):
+        input_statuses = temp_input_statuses
+    for status_info in STATUS_LIST.values():
+        if (status_info['str'] in input_statuses):
+            form['status_selected'].append(True)
+        else:
+            form['status_selected'].append(False)
+    
+    temp_start_date_str = request.args.get('StartDueDate', '')
+    if (temp_start_date_str != ''):
+        start_date = datetime.strptime(temp_start_date_str,JS_TIME_FORMAT)
+        form['start_due_date'] = temp_start_date_str
+    else:
+        form['start_due_date'] = start_date.strftime(JS_TIME_FORMAT)
+    temp_end_date_str = request.args.get('EndDueDate', '')
+    if (temp_end_date_str != ''):
+        end_date   = datetime.strptime(temp_end_date_str,JS_TIME_FORMAT)
+        form['end_due_date'] = temp_end_date_str
+    else:
+        form['end_due_date'] = end_date.strftime(JS_TIME_FORMAT)
+    project = request.args.get('ProjectQuery', '')
+    if (project != ''):
+        form['project'] = project
+    name    = request.args.get('NameQuery', '')
+    if (name != ''):
+        form['name'] = name
+
+    # Get task data in table
+    tasks_db_due_date = get_Task_DB_by_query(
+        statuses = input_statuses,
+        start_due_date = start_date,
+        end_due_date = end_date,
+        project = project,
+        name = name
+    ).order_by(Task_DB.due_date)
+
+    tasks = []
+    tasks_id = []
+    for task_db in tasks_db_due_date.all():
         task = Task(task_db)
-        to_do_tasks.append(task)
+        tasks.append(task)
+        tasks_id.append(task_db.id)
+    
+    project_option = get_existed_option_list()
 
     return render_template(
         'dandori_mngmnt/index.html',
-        tasks = to_do_tasks
+        form=form,
+        tasks = tasks,
+        project_option = project_option
     )
 
 # Task Overview page

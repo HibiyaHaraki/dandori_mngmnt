@@ -16,6 +16,12 @@ MERMAID_CONFIG = """
 config:
     theme: 'dark'
 ---
+flowchart TB
+    classDef OPEN fill:#6C757D,stroke:#FFFFFF,stroke-width:0px,color:#FFFFFF
+    classDef IN_PROGRESS fill:#0d6efd,stroke:#FFFFFF,stroke-width:0px,color:#FFFFFF
+    classDef WAIT fill:#ffc107,stroke:#FFFFFF,stroke-width:0px,color:#FFFFFF,color:#000000
+    classDef DONE fill:#198754,stroke:#FFFFFF,stroke-width:0px,color:#FFFFFF
+
 """
 
 def get_relationship_list():
@@ -80,7 +86,6 @@ def remove_duplicated_relationship(links:list):
 
 def generate_mermaid_command(links:list):
     output_command = MERMAID_CONFIG
-    output_command += "flowchart TB" + "\n"
 
     # Links
     links = remove_duplicated_relationship(links)
@@ -118,15 +123,40 @@ def generate_mermaid_command(links:list):
     # Add connection
     for link in links:
         if (link["relationship"] == "after"):
-            output_command += "{0}-->{1}".format(link["TargetTaskID"],link["SourceTaskID"]) + "\n"
+            output_command += "{0}:::{2} --> {1}:::{3}".format(
+                link["TargetTaskID"],
+                link["SourceTaskID"],
+                link["TargetStatus"].replace(" ","_"),
+                link["SourceStatus"].replace(" ","_")
+            ) + "\n"
         if (link["relationship"] == "before"):
-            output_command += "{0}-->{1}".format(link["SourceTaskID"],link["TargetTaskID"]) + "\n"
+            output_command += "{0}:::{2} --> {1}:::{3}".format(
+                link["SourceTaskID"],
+                link["TargetTaskID"],
+                link["TargetStatus"].replace(" ","_"),
+                link["SourceStatus"].replace(" ","_")
+            ) + "\n"
         if (link["relationship"] == "relate to"):
-            output_command += "{0}-- relate to --{1}".format(link["SourceTaskID"],link["TargetTaskID"]) + "\n"
+            output_command += "{0}:::{2} -- relate to -- {1}:::{3}".format(
+                link["SourceTaskID"],
+                link["TargetTaskID"],
+                link["TargetStatus"].replace(" ","_"),
+                link["SourceStatus"].replace(" ","_")
+            ) + "\n"
         if (link["relationship"] == "blocks"):
-            output_command += "{0} --x {1}".format(link["SourceTaskID"],link["TargetTaskID"]) + "\n"
+            output_command += "{0}:::{2} --x {1}:::{3}".format(
+                link["SourceTaskID"],
+                link["TargetTaskID"],
+                link["TargetStatus"].replace(" ","_"),
+                link["SourceStatus"].replace(" ","_")
+            ) + "\n"
         if (link["relationship"] == "is blocked by"):
-            output_command += "{0} --x {1}".format(link["TargetTaskID"],link["SourceTaskID"]) + "\n"
+            output_command += "{0}:::{2} --x {1}:::{3}".format(
+                link["TargetTaskID"],
+                link["SourceTaskID"],
+                link["TargetStatus"].replace(" ","_"),
+                link["SourceStatus"].replace(" ","_")
+            ) + "\n"
     
     print(output_command)
     return output_command

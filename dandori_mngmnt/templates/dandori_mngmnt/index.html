@@ -17,4 +17,10 @@ Link: /
     {% include 'dandori_mngmnt/task_block/task_list.html' %}
 </div>
 
+<div class="col-auto mt-3 sticky-bottom bg-body">
+    <form action="/" method="GET">
+        {% include 'dandori_mngmnt/task_block/task_selector.html' %}
+    </form>
+</div>
+
 {% endblock %}
