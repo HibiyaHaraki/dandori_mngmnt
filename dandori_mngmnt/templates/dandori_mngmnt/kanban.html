@@ -1,0 +1,24 @@
+<!--
+Kanban TEMPLATE
+
+July, 2025
+Created by Hibiya Haraki
+
+Abstract: Kanban page template
+Link: /TASK
+-->
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<!-- Task flow by splitting status -->
+{% include 'dandori_mngmnt/task_block/task_flow.html' %}
+
+<div class="col-auto mt-3 sticky-bottom bg-body">
+    <form action="/TASK" method="GET">
+        {% include 'dandori_mngmnt/task_block/task_selector.html' %}
+    </form>
+</div>
+
+{% endblock %}

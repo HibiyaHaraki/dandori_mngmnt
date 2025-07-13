@@ -1,0 +1,72 @@
+{% block content %}
+<div class="modal fade" id="Form_EditTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-fullscreen-md-down">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit {{ task.sysID }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/{{ task.sysID }}/edit_task" method="POST" id="EditTask">
+                <fieldset>
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <label for="TaskID" class="form-label">Task ID</label>
+                            <input type="text" class="form-control" id="TaskID" value={{ task.sysID }} disabled>
+                        </div>
+                        <div class="col-10">
+                            <label for="TaskName" class="form-label">
+                                Task Name
+                                <span class="badge text-bg-danger">Must</span>
+                            </label>
+                            <input type="text" class="form-control" id="TaskName" name="TaskName" value="{{ task.name }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="TaskProject" class="form-label">
+                            Project
+                        </label>
+                        <input type="text" class="form-control" id="TaskProject" list="datalistOptions" name="TaskProject" value="{{ task.project }}">
+                        <datalist id="datalistOptions">
+                            {% for project_name in project_option %}
+                            <option value="{{ project_name }}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="mb-3">
+                        <label for="TaskAssignedBy" class="form-label">
+                            Assigned by
+                            <span class="badge text-bg-danger">Must</span>
+                        </label>
+                        <input type="text" class="form-control" id="TaskAssignedBy" name="TaskAssignedBy" value="{{ task.assigned_by }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="TaskDueDate" class="form-label">
+                            Due date
+                            <span class="badge text-bg-danger">Must</span>
+                        </label>
+                        <input type="datetime-local" class="form-control" id="TaskDueDate" name="TaskDueDate" value="{{ task.due_date.str_js }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="TaskCriteria" class="form-label">
+                            Criteria
+                            <span class="badge text-bg-danger">Must</span>
+                        </label>
+                        <textarea class="form-control" id="TaskCriteria" name="TaskCriteria" rows="3">{{ task.criteria }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="TaskDescription" class="form-label">
+                            Description
+                        </label>
+                        <textarea class="form-control" id="TaskDescription" name="TaskDescription" rows="5">{{ task.description}}</textarea>
+                    </div>
+                </fieldset>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

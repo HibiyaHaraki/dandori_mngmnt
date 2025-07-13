@@ -1,100 +1,26 @@
+<!--
+INDEX TEMPLATE
+
+July, 2025
+Created by Hibiya Haraki
+
+Abstract: Index page template
+Link: /
+-->
+
 {% extends "layout.html" %}
 
 {% block content %}
 
-<div class="row">
-    <div class="col-auto me-auto">
-        <h2>To do Steps (
-            <script>
-                var today=new Date(); 
-                var year = today.getFullYear();
-                var month = today.getMonth()+1;
-                var week = today.getDay();
-                var day = today.getDate();
-                document.write(year+"/"+month+"/"+day)
-            </script>    
-        )</h2>
-    </div>
+<div class="row mb-5">
+    <!-- Task List -->
+    {% include 'dandori_mngmnt/task_block/task_list.html' %}
 </div>
-{% include 'dandori_mngmnt/step_flow.html' %}
 
-<div class="row mb-5">
-    <div class="col-xl">
-        <div class="row w-100">
-            <div class="col-auto me-auto">
-                <h2>To do Tasks (ALL)</h2>
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-primary" onclick="location.href='/create_task'">
-                    Create
-                </button>
-            </div>
-        </div>
-        <table class="table table-dark table-striped text-wrap">
-            <thead>
-                <tr>
-                    <th class="align-middle text-center" scope="col" rowspan="2">ID</th>
-                    <th class="align-middle text-center" scope="col" rowspan="2">Status</th>
-                    <th scope="col" class="align-middle" rowspan="2">Task Name</th>
-                    <th class="align-middle text-center" scope="col" colspan="2">Due Date</th>
-                </tr>
-                <tr>
-                    <th class="align-middle text-center" scope="col">Task</th>
-                    <th class="align-middle text-center" scope="col">Next</th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                {% for task in to_do_tasks %}
-                    <tr>
-                        <th scope="row" class="align-middle text-center"><a href="{{ task.url }}" >{{ task.sysID }}</a></td>
-                        <td class="align-middle text-center"><span class="badge text-bg-{{ task.status.state_color }}">{{ task.status.state_str }}</span></td>
-                        <td>
-                            {% if task.project != '' %}
-                            [{{ task.project }}] 
-                            {% endif %}
-                            {{ task.name }}
-                        </td>
-                        <td class="align-middle text-center"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></td>
-                        <td class="align-middle text-center"><span class="text-nowrap {{ task.next_step_due_date.state }}">{{ task.next_step_due_date.str }}</span></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="col-auto mt-3 sticky-bottom bg-body">
+    <form action="/" method="GET">
+        {% include 'dandori_mngmnt/task_block/task_selector.html' %}
+    </form>
 </div>
-<!--
-<div class="row mb-5">
-    <div class="col-xl">
-        <div class="row w-100">
-            <div class="col-auto me-auto">
-                <h2>To do Steps</h2>
-            </div>
-        </div>
-        <table class="table table-sm table-dark table-striped w-100">
-            <thead>
-                <tr>
-                    <th class="align-middle text-center" scope="col">ID</th>
-                    <th class="align-middle text-center" scope="col">Task</th>
-                    <th class="align-middle text-center" scope="col">Status</th>
-                    <th scope="col">Step Name</th>
-                    <th class="align-middle text-center" scope="col">Due Date</th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                {% for step in to_do_steps %}
-                    <tr>
-                        <th class="align-middle text-center" scope="row"><a href="{{ step.url }}">{{ step.sysID }}</a></td>
-                        <th class="align-middle text-center" scope="row"><a href="/TASK/{{ step.parent_task }}">TASK/{{ step.parent_task }}</a></td>
-                        <td class="align-middle text-center"><span class="badge text-bg-{{ step.status.state_color }}">{{ step.status.state_str }}</span></td>
-                        <td>
-                            {{ step.name }}
-                        </td>
-                        <td class="align-middle text-center"><span class="text-nowrap {{ step.due_date.state }}">{{ step.due_date.str }}</span></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
--->
+
 {% endblock %}

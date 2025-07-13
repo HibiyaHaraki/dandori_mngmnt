@@ -1,0 +1,155 @@
+<!--
+TASK ADD LINK PAGE TEMPLATE
+
+July, 2025
+Created by Hibiya Haraki
+
+Abstract: Task add link page template
+Link: /TASK/<int:id>/add_link
+-->
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<!-- Task Name -->
+<div class="mt-3 mb-5">
+    <h3>
+        Add link to TASK
+    </h3>
+</div>
+
+<!-- Input field -->
+<form class="row mb-5" id="TASK_add_link_GET" action="/TASK/{{ task.id }}/add_link" method="GET">
+
+    <!-- Source Task -->
+    <div class="mb-3 col">
+        <label for="SourceTaskID_Check" class="form-label">Source Task</label>
+        <div class="input-group">
+            <span class="input-group-text" for="SourceTaskID_Check">TASK/</span>
+            <input type="text" class="form-control" id="SourceTaskID_Check" name="SourceTaskID_Check" value="{{ task.id }}" disabled>
+        </div>
+    </div>
+
+    <!-- Relationship -->
+    <div class="mb-3 col">
+        <label for="Relationship_Check" class="form-label">Relationship</label>
+        <div class="input-group">
+            <select class="form-select" id="Relationship_Check" name="Relationship_Check">
+                {% for relationship in relationships %}
+                    {% if relationship == target_task_relationship %}
+                        <option value="{{relationship}}" selected>{{relationship}}</option>
+                    {% else %}
+                        <option value="{{relationship}}">{{relationship}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Target Task Information -->
+    <div class="mb-3 col">
+        <label for="TargetTaskID_Check" class="form-label">Target Task</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" for="TargetTaskID_Check"><a href="/TASK" target="_blank">TASK/</a></span>
+            <input type="number" class="form-control" id="TargetTaskID_Check" name="TargetTaskID_Check" placeholder="Target Task ID" value="{{ target_task.id }}">
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-secondary mb-5 bottom-0">Check</button>
+</form>
+
+<!-- Confirmation field -->
+<form class="row mb-5" id="TASK_add_link_POST" action="/TASK/{{ task.id }}/add_link" method="POST">
+    <div class="row align-items-center mb-3">
+
+        <!-- Source Task Info -->
+        <div class="col-4 mb-3">
+            <a style="text-decoration: none;" href="{{ task.url }}">
+                <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                    <div class="card-header">{{ task.name }}</div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ task.due_date.state }}">{{ task.due_date.str }}</span></h6>
+                        <span class="badge text-bg-{{ task.status.state_color }}">{{ task.status.state_str }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Relationship -->
+        <div class="mb-3 col-4">
+            <h3 class="text-center">
+                <b>{{target_task_relationship}}</b>
+            </h3>
+        <!--
+            <select class="form-select" id="Relationship_Check" name="Relationship_Check" disabled>
+                {% for relationship in relationships %}
+                    {% if relationship == target_task_relationship %}
+                        <option value="{{relationship}}" selected>{{relationship}}</option>
+                    {% else %}
+                        <option value="{{relationship}}">{{relationship}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        -->
+        </div>
+
+        <!-- Target Task Info -->
+        <div class="col-4 mb-3">
+            <a style="text-decoration: none;" href="{{ target_task.url }}">
+                <div class="card one_card mx-auto my-1" style="width: 18rem;">
+                    <div class="card-header">{{ target_task.name }}</div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-body-secondary"><span class="text-nowrap {{ target_task.due_date.state }}">{{ target_task.due_date.str }}</span></h6>
+                        <span class="badge text-bg-{{ target_task.status.state_color }}">{{ target_task.status.state_str }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- No Displaying -->
+        <div class="d-none">
+
+            <!-- Source Task -->
+            <div class="input-group mb-3 col-1">
+                <span class="input-group-text" for="SourceTaskID_Confirm">
+                    <a href="/TASK/{{ task.id }}">
+                        TASK/
+                    </a>
+                </span>
+                <input type="number" id="SourceTaskID_Confirm" name="SourceTaskID_Confirm" class="form-control" value="{{ task.id }}">
+            </div>
+
+            <!-- Relationship -->
+            <div class="mb-3 col">
+                <label for="Relationship_Confirm" class="form-label">Relationship</label>
+                <div class="input-group">
+                    <select class="form-select" id="Relationship_Confirm" name="Relationship_Confirm">
+                        {% for relationship in relationships %}
+                            {% if relationship == target_task_relationship %}
+                                <option value="{{relationship}}" selected>{{relationship}}</option>
+                            {% else %}
+                                <option value="{{relationship}}">{{relationship}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Target Task Information -->
+            <div class="mb-3 col">
+                <label for="TargetTaskID_Check" class="form-label">Target Task</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" for="TargetTaskID_Confirm">TASK/</span>
+                    <input type="number" class="form-control" id="TargetTaskID_Confirm" name="TargetTaskID_Confirm" placeholder="Target Task ID" value="{{ target_task.id }}">
+                </div>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-5">Add Link</button>
+
+    </div>
+</form>
+
+{% endblock %}

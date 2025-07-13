@@ -5,7 +5,6 @@
 #
 
 import json
-import copy
 from datetime import datetime, timedelta, time
 
 # Database model
@@ -16,7 +15,7 @@ from dandori_mngmnt.models.Task_DB import Task_DB
 from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
 from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
 from dandori_mngmnt.script.Comment  import Comment
-from dandori_mngmnt.script.Step     import Step
+from dandori_mngmnt.script.Links    import generate_mermaid_command, get_relationship_list, get_pair_relationship
 
 # Task class definition
 class Task():
@@ -43,20 +42,8 @@ class Task():
         self.status             = Status(task_db.status)
         self.assigned_by        = task_db.assigned_by
         self.url                = "/" + self.sysID
-        # self.steps_json  = task_db.steps
-        self.steps              = json.loads(task_db.steps)
         self.comments           = json.loads(task_db.comments)
-        self.next_step_due_date = self.get_next_due_date()
-    
-    # Get next due date in this task
-    def get_next_due_date(self):
-        next_step_due_date = self.due_date
-        for step_idx in self.steps:
-            temp_step = Step(step_idx)
-            if (temp_step.status.state_str != "DONE"):
-                if (temp_step.due_date.due_date < next_step_due_date.due_date):
-                    next_step_due_date = temp_step.due_date
-        return next_step_due_date
+        self.links              = json.loads(task_db.links)
     
     # Update database data of Task
     def update(self):
@@ -68,18 +55,12 @@ class Task():
             criteria    = self.criteria,
             due_date    = self.due_date.due_date,
             status      = self.status.state_str,
-            steps       = json.dumps(self.steps),
             assigned_by = self.assigned_by,
-            comments    = json.dumps(self.comments)
+            comments    = json.dumps(self.comments),
+            links       = json.dumps(self.links)
         )
         db.session.merge(updated_task_db)
         db.session.commit()
-    
-    def get_steps(self):
-        steps = []
-        for stepID in self.steps:
-            steps.append(Step(stepID))
-        return steps
 
     def get_comments(self):
         comments = []
@@ -87,16 +68,26 @@ class Task():
             comments.append(Comment(commentID))
         return comments
     
-    def update_TaskStatus(self):
-        # Get step data
-        steps = self.get_steps()
-        step_status = []
-        for step in steps:
-            step_status.append(
-                step.status
-            )
+    def _mermaid_command_input(self):
+        mermaid_input = []
+
+        for link in self.links:
+            input_command = {
+                "TargetTaskID": link["TaskID"],
+                "relationship": link["relationship"],
+                "SourceTaskID": self.id,
+                "TargetStatus": Task(int(link["TaskID"])).status.state_str,
+                "SourceStatus": self.status.state_str
+            }
+            mermaid_input.append(input_command)
         
-        self.status.update_TaskStatus(step_status)
+        return mermaid_input
+
+    def get_mermaid_command(self):
+        mermaid_command_input = self._mermaid_command_input()
+        mermaid_command = generate_mermaid_command(mermaid_command_input)
+        return mermaid_command
+
 
 # Check input
 def check_task_input(
@@ -169,20 +160,21 @@ def add_new_Task(
         criteria    = form_criteria,
         due_date    = form_datetime_due_date,
         status      = new_task_status.state_str,
-        steps       = json.dumps([]),
         assigned_by = form_assignedby,
-        comments    = json.dumps([])
+        comments    = json.dumps([]),
+        links       = json.dumps([])
     )
     return invalid_input_flag, invalid_inputs, new_task
 
-# Get Task ID
+# Get Task ID in TASK_DB
 def _get_new_taskID():
     return db.session.query(Task_DB).count() + 1
 
+# Get Task ID
 def get_new_taskID():
     return "TASK/" + str(_get_new_taskID())
 
-# Function for analysis
+# Get task_db data by using query
 def get_Task_DB_by_query(
     statuses:list           = ALL_STATUS,
     start_due_date:datetime = None,
@@ -214,6 +206,7 @@ def get_Task_DB_by_query(
 
     return task_db_list
 
+# Get analysis data from status point of view
 def get_task_status_analysis_data(
     statuses:list,
     task_db_list:list
@@ -241,6 +234,7 @@ def get_task_status_analysis_data(
 
     return status_statistics
 
+# Get analysis data from due date point of view
 def get_task_dueDate_analysis_data(
     statuses:list,
     task_db_list
@@ -283,6 +277,7 @@ def get_task_dueDate_analysis_data(
     
     return dueDate_statistics
 
+# Get existed project list
 def get_existed_option_list():
     existed_project_list = []
     task_db_list = db.session.query(Task_DB).all()
@@ -290,3 +285,93 @@ def get_existed_option_list():
         existed_project_list.append(str(task_db.project))
     existed_project_list = list(set(existed_project_list))
     return existed_project_list
+
+# Check link condition
+def check_link_condition(
+    SourceTaskID:int,
+    TargetTaskID:int,
+    relationship:str
+):
+    link_flag = True
+
+    # Check ID
+    if (SourceTaskID == TargetTaskID):
+        link_flag = False
+    if (SourceTaskID < 1 or SourceTaskID > db.session.query(Task_DB).count()):
+        link_flag = False
+    if (TargetTaskID < 1 or TargetTaskID > db.session.query(Task_DB).count()):
+        link_flag = False
+    
+    # Check Relationship
+    if (relationship not in get_relationship_list()):
+        link_flag = False
+    
+    # Check the relationship exist or not
+    source_task = Task(SourceTaskID)
+    for link in source_task.links:
+        if (
+            link["relationship"] == relationship
+            and
+            link["TaskID"] == TargetTaskID
+        ):
+            link_flag = False
+    
+    return link_flag
+
+# Add Task Link
+def add_task_link(
+    SourceTaskID:int,
+    TargetTaskID:int,
+    relationship:str
+):
+    # Source Task
+    source_task = Task(SourceTaskID)
+    source_task.links.append({
+        "relationship": relationship,
+        "TaskID"      : TargetTaskID
+    })
+    source_task.update()
+
+    # Target Task
+    target_task = Task(TargetTaskID)
+    pair_relationship = get_pair_relationship(relationship)
+    target_task.links.append({
+        "relationship": pair_relationship,
+        "TaskID"      : SourceTaskID
+    })
+    target_task.update()
+
+    return True
+
+# Remove Task Link
+def remove_task_link(
+    SourceTaskID:int,
+    TargetTaskID:int,
+    relationship:str
+):
+    # Update Source Task
+    SourceTask = Task(SourceTaskID)
+    for idx,link in enumerate(SourceTask.links):
+        if (
+            link["TaskID"] == int(TargetTaskID)
+            and
+            link["relationship"] == relationship
+        ):
+            SourceTask.links.pop(idx)
+            break
+    SourceTask.update()
+
+    # Update Target Task
+    pair_relationship = get_pair_relationship(relationship)
+    TargetTask = Task(TargetTaskID)
+    for idx,link in enumerate(TargetTask.links):
+        if (
+            link["TaskID"] == int(SourceTaskID)
+            and
+            link["relationship"] == pair_relationship
+        ):
+            TargetTask.links.pop(idx)
+            break
+    TargetTask.update()
+
+    return True

@@ -4,9 +4,6 @@
 # Comment.py
 #
 
-import json
-from datetime import datetime
-
 # Database model
 from dandori_mngmnt import db
 from dandori_mngmnt.models.Comment_DB import Comment_DB
