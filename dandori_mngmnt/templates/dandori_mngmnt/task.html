@@ -24,20 +24,6 @@ Link: /TASK
 
 </div>
 
-<!-- Task Link Chart -->
-<div class="row mb-3">
-    <span class="todo_type">Link Chart:</span>
-    <div class="mermaid m-auto">
-    {{ chart_links }}
-    </div>
-</div>
-
-<!-- Task List-->
-{% include 'dandori_mngmnt/task_block/task_list.html' %}
-
-<!-- Task flow by splitting status -->
-{% include 'dandori_mngmnt/task_block/task_flow.html' %}
-
 <div class="col-auto mt-3 sticky-bottom bg-body">
     <form action="/TASK" method="GET">
         {% include 'dandori_mngmnt/task_block/task_selector.html' %}
