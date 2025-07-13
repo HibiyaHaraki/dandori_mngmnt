@@ -1,0 +1,111 @@
+<!--
+CREATE Linked TASK PAGE TEMPLATE
+
+July, 2025
+Created by Hibiya Haraki
+
+Abstract: Create Linked Task page template
+Link: /create_linked_task
+-->
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if invalid_input_flag %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error: Cannot create new Task!!</h4>
+    <hr>
+    <ul>
+        {% for input in invalid_inputs %}
+        <li>Invalid {{ input }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<form action="/TASK/{{ task.id }}/create_linked_task" method="POST">
+    <fieldset>
+        <div class="row mb-3">
+            <div class="col-2">
+                <label for="TaskID" class="form-label">Task ID</label>
+                <input type="text" class="form-control" id="TaskID" value={{ new_taskID }} disabled>
+            </div>
+            <div class="col-10">
+                <label for="TaskName" class="form-label">
+                    Task Name
+                    <span class="badge text-bg-danger">Must</span>
+                </label>
+                <input type="text" class="form-control" id="TaskName" name="TaskName">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="TaskProject" class="form-label">
+                Project
+            </label>
+            <input type="text" class="form-control" list="datalistOptions" id="TaskProject" name="TaskProject">
+            <datalist id="datalistOptions">
+                {% for project_name in project_option %}
+                <option value="{{ project_name }}">
+                {% endfor %}
+            </datalist>
+        </div>
+        <div class="mb-3">
+            <label for="TaskAssignedBy" class="form-label">
+                Assigned by
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <input type="text" class="form-control" id="TaskAssignedBy" name="TaskAssignedBy">
+        </div>
+        <div class="mb-3">
+            <label for="TaskDueDate" class="form-label">
+                Due date
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <input type="datetime-local" class="form-control" id="TaskDueDate" name="TaskDueDate">
+        </div>
+        <div class="mb-3">
+            <label for="TaskCriteria" class="form-label">
+                Criteria
+                <span class="badge text-bg-danger">Must</span>
+            </label>
+            <textarea class="form-control" id="TaskCriteria" name="TaskCriteria" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="TaskDescription" class="form-label">
+                Description
+            </label>
+            <textarea class="form-control" id="TaskDescription" name="TaskDescription" rows="5"></textarea>
+        </div>
+
+        <div class="row mb-3">
+            <!-- Relationship -->
+            <div class="mb-3 col-6">
+                <label for="Relationship_Check" class="form-label">Relationship</label>
+                <div class="input-group">
+                    <select class="form-select" id="Relationship_Check" name="Relationship_Check">
+                        {% for relationship in relationships %}
+                            {% if relationship == target_task_relationship %}
+                                <option value="{{relationship}}" selected>{{relationship}}</option>
+                            {% else %}
+                                <option value="{{relationship}}">{{relationship}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Target Task Information -->
+            <div class="mb-3 col-6">
+                <label for="TargetTaskID_Check" class="form-label">Target Task</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" for="TargetTaskID_Check"><a href="/TASK" target="_blank">TASK/</a></span>
+                    <input type="number" class="form-control" id="TargetTaskID_Check" name="TargetTaskID_Check" placeholder="Target Task ID" value="{{ task.id }}" disabled>
+                </div>
+            </div>
+        </div>
+        
+    </fieldset>
+    <button type="submit" class="btn btn-primary mb-5">Create</button>
+</form>
+
+{% endblock %}
