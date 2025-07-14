@@ -12,19 +12,22 @@ Link: /TASK
 
 {% block content %}
 
-<!-- Task Link Chart -->
-<div class="row mb-3">
-    <span class="todo_type">Link Chart:</span>
-    <div class="mermaid m-auto">
-    {{ chart_links }}
+<div style="min-height: calc(100vh - 420px)" class="mb-5">
+    <!-- Task Link Chart -->
+    <div class="row mb-3">
+        <span class="todo_type">Link Chart:</span>
+        <div class="mermaid m-auto">
+        {{ chart_links }}
+        </div>
     </div>
+
+    <!-- Relationship List -->
+    {% include 'dandori_mngmnt/task_block/relationship_list.html' %}
+
+    <!-- Task List-->
+    {% include 'dandori_mngmnt/task_block/task_list.html' %}
+
 </div>
-
-<!-- Relationship List -->
-{% include 'dandori_mngmnt/task_block/relationship_list.html' %}
-
-<!-- Task List-->
-{% include 'dandori_mngmnt/task_block/task_list.html' %}
 
 <div class="col-auto mt-3 sticky-bottom bg-body">
     <form action="/TASK_LINK" method="GET">

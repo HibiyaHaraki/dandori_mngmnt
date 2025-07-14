@@ -13,7 +13,9 @@ Link: /TASK
 {% block content %}
 
 <!-- Task flow by splitting status -->
-{% include 'dandori_mngmnt/task_block/task_flow.html' %}
+<div style="min-height: calc(100vh - 420px)" class="mb-5">
+    {% include 'dandori_mngmnt/task_block/task_flow.html' %}
+</div>
 
 <div class="col-auto mt-3 sticky-bottom bg-body">
     <form action="/TASK" method="GET">
