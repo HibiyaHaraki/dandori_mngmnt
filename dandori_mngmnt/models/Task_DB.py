@@ -1,15 +1,18 @@
-#
-# May 2025. Created by Hibiya Haraki
-#
-# Task_DB.py
-#
+
+"""
+Task_DB.py
+SQLAlchemy model for the Task table in the Dandori Management database.
+
+Created by Hibiya Haraki, May 2025.
+"""
 
 from dandori_mngmnt import db
 
 # Task database model
 class Task_DB(db.Model):
-
-    # Define Database
+    """
+    SQLAlchemy model for tasks.
+    """
     __tablename__ = 'task'
     id              = db.Column(db.Integer     , primary_key = True )
     name            = db.Column(db.String( 255), nullable    = False)

@@ -1,8 +1,11 @@
-#
-# May 2025. Created by Hibiya Haraki
-#
-# dandori_mngmnt.py
-#
+
+"""
+dandori_mngmnt.py
+Main Flask application for Dandori Management system.
+Defines all routes and main logic for task, comment, and link management.
+
+Created by Hibiya Haraki, May 2025.
+"""
 
 from flask import render_template, request, url_for, redirect
 from datetime import datetime, date, timedelta, time
@@ -29,6 +32,11 @@ NUMBER_OF_DAYS = 30
 # Index page
 @app.route('/', methods=['GET'])
 def index():
+    """
+    Index page route. Shows the main task list and filter form.
+    Returns:
+        Rendered HTML for the index page.
+    """
     # Inititalize input data
     form = {
         'status_info'    : STATUS_LIST,
@@ -101,6 +109,11 @@ def index():
 # Kanban page
 @app.route('/Kanban', methods=['GET'])
 def kanban():
+    """
+    Kanban page route. Shows tasks in a Kanban-style board by status.
+    Returns:
+        Rendered HTML for the Kanban page.
+    """
     if (request.method == 'GET'):
         # Inititalize input data
         form = {
@@ -174,6 +187,11 @@ def kanban():
 # Task Link Overview page
 @app.route('/TASK_LINK', methods=['GET'])
 def task_link():
+    """
+    Task link overview page route. Shows all task relationships and Mermaid chart.
+    Returns:
+        Rendered HTML for the task link overview page.
+    """
     if (request.method == 'GET'):
         # Inititalize input data
         form = {
@@ -268,6 +286,11 @@ def task_link():
 # Task Overview page
 @app.route('/TASK', methods=['GET'])
 def task():
+    """
+    Task overview page route. Shows statistics, analysis, and all tasks.
+    Returns:
+        Rendered HTML for the task overview page.
+    """
     if (request.method == 'GET'):
         # Inititalize input data
         form = {
@@ -374,6 +397,13 @@ def task():
 # Task detail Page
 @app.route('/TASK/<int:id>', methods=['GET', 'POST'])
 def task_detail(id):
+    """
+    Task detail page route. Shows details, comments, and links for a task.
+    Args:
+        id (int): Task ID.
+    Returns:
+        Rendered HTML for the task detail page.
+    """
     if (request.method == 'GET'):
         task_data = Task(id)
         project_option = get_existed_option_list()
@@ -402,6 +432,13 @@ def task_detail(id):
 # Task add comment
 @app.route('/TASK/<int:id>/add_comment', methods=['POST'])
 def task_add_comment(id):
+    """
+    Add a comment to a task.
+    Args:
+        id (int): Task ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     if (request.method == 'POST'):
         form_comment = request.form.get('AddComment')
         if (len(form_comment) > 0):
@@ -416,6 +453,14 @@ def task_add_comment(id):
 # Task edit comment
 @app.route('/TASK/<int:task_id>/edit_comment/<int:comment_id>', methods=['POST'])
 def task_edit_comment(task_id, comment_id):
+    """
+    Edit a comment for a task.
+    Args:
+        task_id (int): Task ID.
+        comment_id (int): Comment ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     if (request.method == 'POST'):
         form_comment    = request.form.get('EditComment')
         current_comment = Comment(int(comment_id))
@@ -425,7 +470,15 @@ def task_edit_comment(task_id, comment_id):
 
 # Task delete comment
 @app.route('/TASK/<int:task_id>/delete_comment/<int:comment_id>', methods=['GET'])
-def task_delete_comment(task_id,comment_id):
+def task_delete_comment(task_id, comment_id):
+    """
+    Delete a comment from a task.
+    Args:
+        task_id (int): Task ID.
+        comment_id (int): Comment ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     if (request.method == 'GET'):
         current_task = Task(task_id)
         current_task.comments.remove(int(comment_id))
@@ -435,6 +488,13 @@ def task_delete_comment(task_id,comment_id):
 # Edit Task data
 @app.route('/TASK/<int:id>/edit_task', methods=['POST'])
 def edit_task(id):
+    """
+    Edit a task's details.
+    Args:
+        id (int): Task ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     if (request.method == 'POST'):
         task = Task(id)
 
@@ -471,6 +531,13 @@ def edit_task(id):
 # Page for adding the new task with link
 @app.route('/TASK/<int:task_id>/create_linked_task', methods=['GET', 'POST'])
 def create_linked_task(task_id):
+    """
+    Create a new task and link it to an existing task.
+    Args:
+        task_id (int): The ID of the task to link to.
+    Returns:
+        Rendered HTML for the create linked task page or redirect.
+    """
     if (request.method == 'GET'):
         new_taskID = get_new_taskID()
         project_option = get_existed_option_list()
@@ -553,6 +620,11 @@ def create_linked_task(task_id):
 # Page for adding the new task
 @app.route('/create_task', methods=['GET', 'POST'])
 def create_task():
+    """
+    Create a new task.
+    Returns:
+        Rendered HTML for the create task page or redirect.
+    """
     if (request.method == 'GET'):
         new_taskID = get_new_taskID()
         project_option = get_existed_option_list()
@@ -615,6 +687,13 @@ def create_task():
 # Change status of task
 @app.route('/TASK/<int:id>/change_state', methods=['GET'])
 def step_change_state(id):
+    """
+    Change the status of a task to the next state.
+    Args:
+        id (int): Task ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     if (request.method == 'GET'):
 
         # Update Step status
@@ -628,6 +707,13 @@ def step_change_state(id):
 # Add link to Task
 @app.route('/TASK/<int:id>/add_link', methods=['GET','POST'])
 def task_add_link(id):
+    """
+    Add a link between two tasks.
+    Args:
+        id (int): Source Task ID.
+    Returns:
+        Rendered HTML for the add link page or redirect.
+    """
     if (request.method == 'GET'):
         # Get Task ID
         task = Task(id)
@@ -684,6 +770,13 @@ def task_add_link(id):
 # Add link to Task
 @app.route('/TASK/<int:id>/remove_link', methods=['GET'])
 def task_remove_link(id):
+    """
+    Remove a link between two tasks.
+    Args:
+        id (int): Source Task ID.
+    Returns:
+        Redirect to the task detail page.
+    """
     # Get input
     SourceTaskID = id
     TargetTaskID = int(request.args.get('TaskID',''))

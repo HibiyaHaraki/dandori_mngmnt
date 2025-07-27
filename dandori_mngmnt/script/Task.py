@@ -1,8 +1,10 @@
-#
-# May 2025. Created by Hibiya Haraki
-#
-# Task.py
-#
+
+"""
+Task.py
+Defines the Task class and related logic for handling tasks in the Dandori Management system.
+
+Created by Hibiya Haraki, May 2025.
+"""
 
 import json
 from datetime import datetime, timedelta, time
@@ -11,18 +13,18 @@ from datetime import datetime, timedelta, time
 from dandori_mngmnt import db
 from dandori_mngmnt.models.Task_DB import Task_DB
 
-# Required script
+# Required scripts
 from dandori_mngmnt.script.Due_date import Due_date, JS_TIME_FORMAT
 from dandori_mngmnt.script.Status   import Status, STATUS_LIST, ALL_STATUS
 from dandori_mngmnt.script.Comment  import Comment
 from dandori_mngmnt.script.Links    import generate_mermaid_command, get_relationship_list, get_pair_relationship
 
-# Task class definition
 class Task():
-
-    # Constructor
-    def __init__(self, input = None):
-        if input == None:
+    """
+    Class for handling task objects and their database operations.
+    """
+    def __init__(self, input=None):
+        if input is None:
             pass
         elif (type(input) is int):
             if (input <= db.session.query(Task_DB).count()):
@@ -47,6 +49,9 @@ class Task():
     
     # Update database data of Task
     def update(self):
+        """
+        Update the task data in the database.
+        """
         updated_task_db = Task_DB(
             id          = self.id,
             name        = self.name,
@@ -63,12 +68,22 @@ class Task():
         db.session.commit()
 
     def get_comments(self):
+        """
+        Retrieve all comments associated with this task.
+        Returns:
+            list: List of Comment objects.
+        """
         comments = []
         for commentID in self.comments:
             comments.append(Comment(commentID))
         return comments
     
     def _mermaid_command_input(self):
+        """
+        Prepare input data for generating a Mermaid diagram for this task's links.
+        Returns:
+            list: List of dictionaries representing Mermaid command input.
+        """
         mermaid_input = []
 
         for link in self.links:
@@ -84,6 +99,11 @@ class Task():
         return mermaid_input
 
     def get_mermaid_command(self):
+        """
+        Generate a Mermaid diagram command string for this task's links.
+        Returns:
+            str: Mermaid diagram command string.
+        """
         mermaid_command_input = self._mermaid_command_input()
         mermaid_command = generate_mermaid_command(mermaid_command_input)
         return mermaid_command
@@ -91,13 +111,18 @@ class Task():
 
 # Check input
 def check_task_input(
-    form_name:str,
-    form_str_due_date:str,
-    form_criteria:str,
-    form_assignedby:str,
-    form_project:str = '',
-    form_description:str = ''
+    form_name: str,
+    form_str_due_date: str,
+    form_criteria: str,
+    form_assignedby: str,
+    form_project: str = '',
+    form_description: str = ''
 ):
+    """
+    Validate task input fields for creating or updating a task.
+    Returns:
+        tuple: (invalid_input_flag, invalid_inputs)
+    """
     invalid_input_flag = False
     invalid_inputs = []
     # Check input Task Name
@@ -123,21 +148,25 @@ def check_task_input(
     
     # Check input Task Criteria
     if (len(form_criteria) < 1):
-        criteria_invalid_flag = True
+        invalid_input_flag = True
         invalid_inputs.append('Criteria')
     
     return invalid_input_flag, invalid_inputs
 
 # Add new task
 def add_new_Task(
-    form_name:str,
-    form_str_due_date:str,
-    form_criteria:str,
-    form_assignedby:str,
-    form_project:str = '',
-    form_description:str = ''
+    form_name: str,
+    form_str_due_date: str,
+    form_criteria: str,
+    form_assignedby: str,
+    form_project: str = '',
+    form_description: str = ''
 ):
-    
+    """
+    Create a new Task_DB object from form input if valid.
+    Returns:
+        tuple: (invalid_input_flag, invalid_inputs, new_task)
+    """
     invalid_input_flag, invalid_inputs = check_task_input(
         form_name,
         form_str_due_date,
@@ -168,10 +197,20 @@ def add_new_Task(
 
 # Get Task ID in TASK_DB
 def _get_new_taskID():
+    """
+    Get the next available integer Task ID from the database.
+    Returns:
+        int: New Task ID.
+    """
     return db.session.query(Task_DB).count() + 1
 
 # Get Task ID
 def get_new_taskID():
+    """
+    Get the next available Task ID in string format (e.g., 'TASK/1').
+    Returns:
+        str: New Task ID string.
+    """
     return "TASK/" + str(_get_new_taskID())
 
 # Get task_db data by using query
@@ -208,10 +247,14 @@ def get_Task_DB_by_query(
 
 # Get analysis data from status point of view
 def get_task_status_analysis_data(
-    statuses:list,
-    task_db_list:list
+    statuses: list,
+    task_db_list: list
 ):
-    # Get task status statistics for graph
+    """
+    Get task status statistics for graphing by status.
+    Returns:
+        dict: Dictionary with labels, data, color, and index for each status.
+    """
     status_statistics = {
         'labels' : [],
         'data'   : [],
@@ -236,10 +279,14 @@ def get_task_status_analysis_data(
 
 # Get analysis data from due date point of view
 def get_task_dueDate_analysis_data(
-    statuses:list,
+    statuses: list,
     task_db_list
 ):
-
+    """
+    Get task due date statistics for graphing by due date and status.
+    Returns:
+        dict: Dictionary with labels, data, and color for each status and date.
+    """
     dueDate_statistics = {
         'labels' : [],
         'data'   : {},
@@ -279,6 +326,11 @@ def get_task_dueDate_analysis_data(
 
 # Get existed project list
 def get_existed_option_list():
+    """
+    Get a list of all unique project names from the Task_DB table.
+    Returns:
+        list: List of unique project names.
+    """
     existed_project_list = []
     task_db_list = db.session.query(Task_DB).all()
     for task_db in task_db_list:
@@ -288,10 +340,15 @@ def get_existed_option_list():
 
 # Check link condition
 def check_link_condition(
-    SourceTaskID:int,
-    TargetTaskID:int,
-    relationship:str
+    SourceTaskID: int,
+    TargetTaskID: int,
+    relationship: str
 ):
+    """
+    Check if a link between two tasks with a given relationship is valid.
+    Returns:
+        bool: True if the link is valid, False otherwise.
+    """
     link_flag = True
 
     # Check ID
@@ -320,10 +377,15 @@ def check_link_condition(
 
 # Add Task Link
 def add_task_link(
-    SourceTaskID:int,
-    TargetTaskID:int,
-    relationship:str
+    SourceTaskID: int,
+    TargetTaskID: int,
+    relationship: str
 ):
+    """
+    Add a bidirectional link between two tasks with the specified relationship.
+    Returns:
+        bool: True if the link was added successfully.
+    """
     # Source Task
     source_task = Task(SourceTaskID)
     source_task.links.append({
@@ -345,13 +407,18 @@ def add_task_link(
 
 # Remove Task Link
 def remove_task_link(
-    SourceTaskID:int,
-    TargetTaskID:int,
-    relationship:str
+    SourceTaskID: int,
+    TargetTaskID: int,
+    relationship: str
 ):
+    """
+    Remove a bidirectional link between two tasks with the specified relationship.
+    Returns:
+        bool: True if the link was removed successfully.
+    """
     # Update Source Task
     SourceTask = Task(SourceTaskID)
-    for idx,link in enumerate(SourceTask.links):
+    for idx, link in enumerate(SourceTask.links):
         if (
             link["TaskID"] == int(TargetTaskID)
             and
@@ -364,7 +431,7 @@ def remove_task_link(
     # Update Target Task
     pair_relationship = get_pair_relationship(relationship)
     TargetTask = Task(TargetTaskID)
-    for idx,link in enumerate(TargetTask.links):
+    for idx, link in enumerate(TargetTask.links):
         if (
             link["TaskID"] == int(SourceTaskID)
             and
