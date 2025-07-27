@@ -3,7 +3,7 @@
 # 🚀 Dandori Management
 
 
-**🖥️ GUI App for cupposting task management by using ticket.**  
+**🖥️ GUI App for supporting task management by using ticket.**  
 ⚠️ The risk of running this script is always with you.
 
 
