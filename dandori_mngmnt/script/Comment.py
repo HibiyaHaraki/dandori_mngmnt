@@ -1,8 +1,10 @@
-#
-# May 2025. Created by Hibiya Haraki
-#
-# Comment.py
-#
+
+"""
+Comment.py
+Defines the Comment class and functions for handling comments in the Dandori Management system.
+
+Created by Hibiya Haraki, May 2025.
+"""
 
 # Database model
 from dandori_mngmnt import db
@@ -11,12 +13,12 @@ from dandori_mngmnt.models.Comment_DB import Comment_DB
 # Required script
 from dandori_mngmnt.script.Due_date   import STR_FORMAT
 
-# Comment class definition
 class Comment():
-
-    # Constructor
-    def __init__(self, input = None):
-        if (input == None):
+    """
+    Class for handling comment objects and their updates.
+    """
+    def __init__(self, input=None):
+        if input is None:
             pass
         elif (type(input) is int):
             if (input <= db.session.query(Comment_DB).count()):
@@ -33,8 +35,11 @@ class Comment():
 
         self.created_date_str = self.created_date.strftime(STR_FORMAT)
         self.updated_date_str = self.updated_date.strftime(STR_FORMAT)
-    
-    def update(self,comment):
+
+    def update(self, comment):
+        """
+        Update the comment text and commit to the database.
+        """
         self.comment = comment
         updated_comment_db = Comment_DB(
             id      = self.id,
@@ -43,10 +48,14 @@ class Comment():
         db.session.merge(updated_comment_db)
         db.session.commit()
 
-# Add new comment
-def add_new_comment(
-    comment:str
-):
+def add_new_comment(comment: str):
+    """
+    Add a new comment to the database.
+    Args:
+        comment (str): The comment text.
+    Returns:
+        int: The new comment's ID.
+    """
     new_comment = Comment_DB(
         comment = comment
     )

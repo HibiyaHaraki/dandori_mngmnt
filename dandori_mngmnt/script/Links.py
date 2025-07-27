@@ -25,6 +25,11 @@ flowchart TB
 """
 
 def get_relationship_list():
+    """
+    Get a sorted list of all unique relationship types.
+    Returns:
+        list: Sorted list of relationship strings.
+    """
     link_list = []
     for links in LINK_LIST:
         for link in links:
@@ -34,8 +39,14 @@ def get_relationship_list():
     
     return sorted(link_list)
 
-def get_pair_relationship(relationship:str):
-    # Check input
+def get_pair_relationship(relationship: str):
+    """
+    Get the paired relationship for a given relationship.
+    Args:
+        relationship (str): The relationship to find the pair for.
+    Returns:
+        str or bool: The paired relationship, or False if not found.
+    """
     if (relationship not in get_relationship_list()):
         return False
     else:
@@ -45,7 +56,14 @@ def get_pair_relationship(relationship:str):
                     if (link != relationship):
                         return link
 
-def remove_duplicated_relationship(links:list):
+def remove_duplicated_relationship(links: list):
+    """
+    Remove duplicated or mirrored relationships from the links list.
+    Args:
+        links (list): List of link dictionaries.
+    Returns:
+        list: Cleaned list with duplicates removed.
+    """
     remove_list = []
     # Find duplicated relationship
     for idx, link in enumerate(links):
@@ -78,13 +96,20 @@ def remove_duplicated_relationship(links:list):
                     break
     
     # Delete
-    remove_list = sorted(list(set(remove_list)),reverse=True)
+    remove_list = sorted(list(set(remove_list)), reverse=True)
     for remove_idx in remove_list:
         links.pop(remove_idx)
     
     return links
 
-def generate_mermaid_command(links:list):
+def generate_mermaid_command(links: list):
+    """
+    Generate a Mermaid diagram command string from a list of task links.
+    Args:
+        links (list): List of link dictionaries.
+    Returns:
+        str: Mermaid diagram command string.
+    """
     output_command = MERMAID_CONFIG
 
     # Links
@@ -157,8 +182,7 @@ def generate_mermaid_command(links:list):
                 link["TargetStatus"].replace(" ","_"),
                 link["SourceStatus"].replace(" ","_")
             ) + "\n"
-    
-    print(output_command)
+    # Return the generated Mermaid command string
     return output_command
 
 

@@ -1,9 +1,12 @@
-#
-# May 2025. Created by Hibiya Haraki
-#
-# status_control.py
-#
 
+"""
+Status.py
+Defines status constants and the Status class for task state management.
+
+Created by Hibiya Haraki, May 2025.
+"""
+
+# Status definitions for tasks
 STATUS_LIST = {
         "open_state" : {
             "str"        : "OPEN",
@@ -43,13 +46,15 @@ STATUS_LIST = {
         }
     }
 
+# List of all status strings
 ALL_STATUS = [STATUS_LIST[status]['str'] for status in STATUS_LIST.keys()]
 
 class Status():
-
-    # Constructor
-    def __init__(self,state:str = "OPEN"):
-        # Input check
+    """
+    Class for handling task status and transitions.
+    """
+    def __init__(self, state: str = "OPEN"):
+        # Input check for valid state
         input_error_flag = True
         exist_states = STATUS_LIST.keys()
         for exist_state in exist_states:
